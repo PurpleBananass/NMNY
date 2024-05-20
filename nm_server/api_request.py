@@ -78,7 +78,7 @@ def request_auth(data):
     birth = data["birth_date"].split("/")
     birth_date = birth[0]+birth[1]+birth[2]
     number = data["phone"]
-    id_num = "9809291222518" #EDIT!!!!
+    id_num = "" #EDIT!!!!
     # API 요청 파라미터 설정
     options     = {
         "headers": {
