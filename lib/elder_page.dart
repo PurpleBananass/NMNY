@@ -13,6 +13,12 @@ class _ElderPageState extends State<ElderPage> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _birthDateController = TextEditingController();
 
+  bool _isChecked1 = false;
+  bool _isChecked2 = false;
+  bool _isChecked3 = false;
+  bool _isChecked4 = false;
+  bool _isChecked5 = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +40,7 @@ class _ElderPageState extends State<ElderPage> {
               TextField(
                 decoration: InputDecoration(
                   labelText: '이름',
-                  hintText: '홍길동',
+                  hintText: '김찐삼',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -43,7 +49,7 @@ class _ElderPageState extends State<ElderPage> {
                 controller: _phoneController,
                 decoration: InputDecoration(
                   labelText: '휴대폰 번호',
-                  hintText: '01012345678',
+                  hintText: '010-1234-5678',
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
@@ -75,12 +81,12 @@ class _ElderPageState extends State<ElderPage> {
               Row(
                 children: <Widget>[
                   _buildAuthOption('카카오톡 인증', 'assets/kakao_icon.png'),
-                  _buildAuthOption('1 인증', 'assets/kakao_icon.png'),
-                  _buildAuthOption('2 인증', 'assets/kakao_icon.png'),
-                  _buildAuthOption('3 인증', 'assets/kakao_icon.png'),
-                  _buildAuthOption('4 인증', 'assets/kakao_icon.png'),
-                  _buildAuthOption('5 인증', 'assets/kakao_icon.png'),
-                  _buildAuthOption('PASS 인증', 'assets/pass_icon.png'),
+                  _buildAuthOption('PAYCO 인증', 'assets/pass_icon.png'),
+                  _buildAuthOption('국민은행모바일 인증', 'assets/pass_icon.png'),
+                  _buildAuthOption('삼성패스 인증', 'assets/pass_icon.png'),
+                  _buildAuthOption('통신사 PASS 인증', 'assets/pass_icon.png'),
+                  _buildAuthOption('신한 인증', 'assets/pass_icon.png'),
+                  _buildAuthOption('NAVER 인증', 'assets/pass_icon.png')
                 ],
               ),
               SizedBox(height: 20),
@@ -107,16 +113,50 @@ class _ElderPageState extends State<ElderPage> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               CheckboxListTile(
-                value: true,
-                onChanged: (bool? value) {},
-                title: Text('[필수] 개인정보 이용 동의 (국세청)'),
+                value: _isChecked1,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _isChecked1 = value ?? false;
+                  });
+                },
+                title: Text('[필수] 개인정보 이용 동의'),
               ),
               CheckboxListTile(
-                value: true,
-                onChanged: (bool? value) {},
-                title: Text('[필수] 제3자 정보제공 동의 (국세청)'),
+                value: _isChecked2,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _isChecked2 = value ?? false;
+                  });
+                },
+                title: Text('[필수] 제3자 정보제공 동의'),
               ),
-              // Add more CheckboxListTile items as needed
+              CheckboxListTile(
+                value: _isChecked3,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _isChecked3 = value ?? false;
+                  });
+                },
+                title: Text('[필수] 개인정보 제3자 정보제공 동의'),
+              ),
+              CheckboxListTile(
+                value: _isChecked4,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _isChecked4 = value ?? false;
+                  });
+                },
+                title: Text('[필수] 고유식별정보 수집 및 이용 동의'),
+              ),
+              CheckboxListTile(
+                value: _isChecked5,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _isChecked5 = value ?? false;
+                  });
+                },
+                title: Text('[필수] 개인정보 수집 및 이용 동의'),
+              ),
             ],
           ),
         ),
