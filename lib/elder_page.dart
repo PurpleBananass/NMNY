@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'success_page.dart';
 
 class ElderPage extends StatefulWidget {
   const ElderPage({Key? key}) : super(key: key);
@@ -10,6 +13,7 @@ class ElderPage extends StatefulWidget {
 
 class _ElderPageState extends State<ElderPage> {
   String? _selectedAuthOption;
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _birthDateController = TextEditingController();
 
@@ -18,6 +22,44 @@ class _ElderPageState extends State<ElderPage> {
   bool _isChecked3 = false;
   bool _isChecked4 = false;
   bool _isChecked5 = false;
+
+  Future<void> _submitData() async {
+    if (!_isChecked1 || !_isChecked2 || !_isChecked3 || !_isChecked4 || !_isChecked5) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('모든 약관에 동의해야 합니다.')));
+      return;
+    }
+
+    final url = Uri.parse('http://10.0.2.2:5000/submit'); // Update with your server address
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'name': _nameController.text,
+      'phone': _phoneController.text,
+      'birth_date': _birthDateController.text,
+      'auth_method': _selectedAuthOption,
+      'agreements': {
+        'agreement1': _isChecked1,
+        'agreement2': _isChecked2,
+        'agreement3': _isChecked3,
+        'agreement4': _isChecked4,
+        'agreement5': _isChecked5,
+      },
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        print('Data submitted successfully');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data submitted successfully')));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => SuccessPage()));
+      } else {
+        print('Failed to submit data');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to submit data')));
+      }
+    } catch (error) {
+      print('Error submitting data: $error');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error submitting data: $error')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +80,7 @@ class _ElderPageState extends State<ElderPage> {
               ),
               SizedBox(height: 10),
               TextField(
+                controller: _nameController,
                 decoration: InputDecoration(
                   labelText: '이름',
                   hintText: '김찐삼',
@@ -81,19 +124,12 @@ class _ElderPageState extends State<ElderPage> {
               Row(
                 children: <Widget>[
                   _buildAuthOption('카카오톡 인증', 'assets/kakao_icon.png'),
-                  _buildAuthOption('PAYCO 인증', 'assets/pass_icon.png'),
-                  _buildAuthOption('국민은행모바일 인증', 'assets/pass_icon.png'),
-                  _buildAuthOption('삼성패스 인증', 'assets/pass_icon.png'),
-                  _buildAuthOption('통신사 PASS 인증', 'assets/pass_icon.png'),
-                  _buildAuthOption('신한 인증', 'assets/pass_icon.png'),
-                  _buildAuthOption('NAVER 인증', 'assets/pass_icon.png')
+                  _buildAuthOption('PASS 인증', 'assets/pass_icon.png'),
                 ],
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  // Handle the button press
-                },
+                onPressed: _submitData,
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   textStyle: TextStyle(fontSize: 18),
@@ -119,7 +155,7 @@ class _ElderPageState extends State<ElderPage> {
                     _isChecked1 = value ?? false;
                   });
                 },
-                title: Text('[필수] 개인정보 이용 동의'),
+                title: Text('[필수] 개인정보 이용 동의 (국세청)'),
               ),
               CheckboxListTile(
                 value: _isChecked2,
@@ -128,7 +164,7 @@ class _ElderPageState extends State<ElderPage> {
                     _isChecked2 = value ?? false;
                   });
                 },
-                title: Text('[필수] 제3자 정보제공 동의'),
+                title: Text('[필수] 제3자 정보제공 동의 (국세청)'),
               ),
               CheckboxListTile(
                 value: _isChecked3,
@@ -137,7 +173,7 @@ class _ElderPageState extends State<ElderPage> {
                     _isChecked3 = value ?? false;
                   });
                 },
-                title: Text('[필수] 개인정보 제3자 정보제공 동의'),
+                title: Text('[필수] 개인정보 제3자 정보제공 동의 (삼팔삼)'),
               ),
               CheckboxListTile(
                 value: _isChecked4,
@@ -146,7 +182,7 @@ class _ElderPageState extends State<ElderPage> {
                     _isChecked4 = value ?? false;
                   });
                 },
-                title: Text('[필수] 고유식별정보 수집 및 이용 동의'),
+                title: Text('[필수] 고유식별정보 수집 및 이용 동의 (삼팔삼)'),
               ),
               CheckboxListTile(
                 value: _isChecked5,
@@ -155,7 +191,7 @@ class _ElderPageState extends State<ElderPage> {
                     _isChecked5 = value ?? false;
                   });
                 },
-                title: Text('[필수] 개인정보 수집 및 이용 동의'),
+                title: Text('[필수] 개인정보 수집 및 이용 동의 (삼팔삼)'),
               ),
             ],
           ),

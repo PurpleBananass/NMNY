@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'elder_page.dart';
+import 'success_page.dart';
+import 'new_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,6 +18,8 @@ class MyApp extends StatelessWidget {
       home: UserSelectionPage(),
       routes: {
         '/elder': (context) => ElderPage(),
+        '/success': (context) => SuccessPage(),
+        '/new': (context) => NewPage(),
       },
     );
   }
