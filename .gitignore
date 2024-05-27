@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/release
 
 flutter/
+
+# This file should be checked into Version Control Systems.
+.metadata
