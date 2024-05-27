@@ -16,6 +16,8 @@ class _ElderPageState extends State<ElderPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _birthDateController = TextEditingController();
+  final TextEditingController _rrnFirstController = TextEditingController();
+  final TextEditingController _rrnSecondController = TextEditingController();
 
   bool _isChecked1 = false;
   bool _isChecked2 = false;
@@ -29,12 +31,14 @@ class _ElderPageState extends State<ElderPage> {
       return;
     }
 
+    final rrn = '${_rrnFirstController.text}-${_rrnSecondController.text}';
     final url = Uri.parse('http://10.0.2.2:5000/submit'); // Update with your server address
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({
       'name': _nameController.text,
       'phone': _phoneController.text,
       'birth_date': _birthDateController.text,
+      'rrn': rrn,
       'auth_method': _selectedAuthOption,
       'agreements': {
         'agreement1': _isChecked1,
@@ -50,7 +54,10 @@ class _ElderPageState extends State<ElderPage> {
       if (response.statusCode == 200) {
         print('Data submitted successfully');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data submitted successfully')));
-        Navigator.push(context, MaterialPageRoute(builder: (context) => SuccessPage()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SuccessPage(rrn: rrn)),
+        );
       } else {
         print('Failed to submit data');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to submit data')));
@@ -114,6 +121,44 @@ class _ElderPageState extends State<ElderPage> {
                   FilteringTextInputFormatter(RegExp(r'[\d/]'), allow: true),
                   LengthLimitingTextInputFormatter(10),
                   BirthDateInputFormatter(),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _rrnFirstController,
+                      decoration: InputDecoration(
+                        labelText: '주민등록번호 앞자리',
+                        hintText: '123456',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(6),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Text('-'),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: _rrnSecondController,
+                      decoration: InputDecoration(
+                        labelText: '주민등록번호 뒷자리',
+                        hintText: '1234567',
+                        border: OutlineInputBorder(),
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(7),
+                      ],
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 10),

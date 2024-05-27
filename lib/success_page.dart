@@ -4,14 +4,19 @@ import 'dart:convert';
 import 'new_page.dart';  // Ensure this import points to your new page file
 
 class SuccessPage extends StatelessWidget {
-  const SuccessPage({Key? key}) : super(key: key);
+  final String rrn;
+
+  const SuccessPage({Key? key, required this.rrn}) : super(key: key);
 
   Future<void> _completeAuthentication(BuildContext context) async {
     final url = Uri.parse('http://10.0.2.2:5000/complete'); // Update with your server address
     final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'rrn': rrn,
+    });
 
     try {
-      final response = await http.post(url, headers: headers);
+      final response = await http.post(url, headers: headers, body: body);
       if (response.statusCode == 200) {
         // Navigate to the new page if the response is successful
         Navigator.push(context, MaterialPageRoute(builder: (context) => NewPage()));
@@ -59,7 +64,7 @@ class SuccessPage extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             SizedBox(height: 20),
             Text(
@@ -73,36 +78,33 @@ class SuccessPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 40),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Icon(Icons.message, size: 50),
-                      SizedBox(height: 10),
-                      Text('STEP 01\nKB스타뱅킹앱에서\n메시지 확인', textAlign: TextAlign.center),
-                    ],
-                  ),
-                  Icon(Icons.arrow_forward, size: 30),
-                  Column(
-                    children: <Widget>[
-                      Icon(Icons.verified_user, size: 50),
-                      SizedBox(height: 10),
-                      Text('STEP 02\nKB모바일인증서\n인증진행', textAlign: TextAlign.center),
-                    ],
-                  ),
-                  Icon(Icons.arrow_forward, size: 30),
-                  Column(
-                    children: <Widget>[
-                      Icon(Icons.check_circle, size: 50),
-                      SizedBox(height: 10),
-                      Text('STEP 03\n인증 완료 후,\n현재 화면의 인증 완료 클릭', textAlign: TextAlign.center),
-                    ],
-                  ),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Icon(Icons.message, size: 50),
+                    SizedBox(height: 10),
+                    Text('STEP 01\nKB스타뱅킹앱에서\n메시지 확인', textAlign: TextAlign.center),
+                  ],
+                ),
+                Icon(Icons.arrow_forward, size: 30),
+                Column(
+                  children: <Widget>[
+                    Icon(Icons.verified_user, size: 50),
+                    SizedBox(height: 10),
+                    Text('STEP 02\nKB모바일인증서\n인증진행', textAlign: TextAlign.center),
+                  ],
+                ),
+                Icon(Icons.arrow_forward, size: 30),
+                Column(
+                  children: <Widget>[
+                    Icon(Icons.check_circle, size: 50),
+                    SizedBox(height: 10),
+                    Text('STEP 03\n인증 완료 후,\n현재 화면의 인증 완료 클릭', textAlign: TextAlign.center),
+                  ],
+                ),
+              ],
             ),
             SizedBox(height: 40),
             ElevatedButton(

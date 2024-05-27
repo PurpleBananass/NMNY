@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       home: UserSelectionPage(),
       routes: {
         '/elder': (context) => ElderPage(),
-        '/success': (context) => SuccessPage(),
+        '/success': (context) => SuccessPage(rrn: ''), // Placeholder for navigation with rrn
         '/new': (context) => NewPage(),
       },
     );

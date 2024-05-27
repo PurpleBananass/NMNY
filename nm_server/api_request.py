@@ -8,7 +8,6 @@ from Crypto.Cipher import PKCS1_v1_5, AES
 apiHost = 'https://api.tilko.net/'
 apiKey  = 'bcdb5762c50341e9b42cff6e15aa0c2d'
 
-
 # AES 암호화 함수
 def aesEncrypt(key, iv, plainText):
     def pad(text):
@@ -74,11 +73,12 @@ def request_auth(data):
     # API URL 설정(정부24 간편인증 요청: https://tilko.net/Help/Api/POST-api-apiVersion-GovSimpleAuth-SimpleAuthRequest)
     url         = apiHost + "api/v1.0/hirasimpleauth/simpleauthrequest";
     # auth_type = data["PrivateAuthType"]#EDIT!!!!
+    # 주민등록번호 앞자리
     name = data["name"]
     birth = data["birth_date"].split("/")
     birth_date = birth[0]+birth[1]+birth[2]
     number = data["phone"]
-    id_num = "" #EDIT!!!!
+    id_num = data["rrn"]
     # API 요청 파라미터 설정
     options     = {
         "headers": {
@@ -100,38 +100,43 @@ def request_auth(data):
     # API 호출
     # print(options['json'])
     res         = requests.post(url, headers=options['headers'], json=options['json'])
-    print(f"res: {res.json()}")
+    # print(f"res: {res.json()}")
+    # return data
+    return res.json()
 
-# reqData = res.json()["ResultData"]
-# u = input("Y/N")
-# if input != "no":
-#     print("S")
-#     # API 요청 파라미터 설정
-#     options     = {
-#         "headers": {
-#             "Content-Type"          : "application/json",
-#             "API-KEY"               : apiKey,
-#             "ENC-KEY"               : aesCipherKey
-#         },
-        
-#         "json": {
-#             "IdentityNumber"        : aesEncrypt(aesKey, aesIv, id_num),
-#             "StartDate"             : "20230630",
-#             "EndDate"               : "20240518",
-#             "CxId"                  : reqData["CxId"],
-#             "PrivateAuthType"       : reqData["PrivateAuthType"],
-#             "ReqTxId"               : reqData["ReqTxId"],
-#             "Token"                 : reqData["Token"],
-#             "TxId"                  : reqData["TxId"],
-#             "UserName"              : aesEncrypt(aesKey, aesIv, reqData["UserName"]),
-#             "BirthDate"             : aesEncrypt(aesKey, aesIv, reqData["BirthDate"]),
-#             "UserCellphoneNumber"   : aesEncrypt(aesKey, aesIv, reqData["UserCellphoneNumber"]),
-#         },
-#     }
-
-#     url = apiHost+"api/v1.0/hirasimpleauth/hiraa050300000100";
-#     # url = apiHost+"api/v1.0/hometaxsimpleauth/uternaat32";
+def med_info(reqData):
     
-#     # API 호출
-#     res         = requests.post(url, headers=options['headers'], json=options['json'])
-#     print(f"res: {res.json()}")
+    # reqData = res.json()
+    print(reqData["ResultData"])
+    u = input("Y/N")
+    if input != "no":
+        print("S")
+        # API 요청 파라미터 설정
+        options     = {
+            "headers": {
+                "Content-Type"          : "application/json",
+                "API-KEY"               : apiKey,
+                "ENC-KEY"               : aesCipherKey
+            },
+            
+            "json": {
+                "IdentityNumber"        : aesEncrypt(aesKey, aesIv, id_num),
+                "StartDate"             : "20230630",
+                "EndDate"               : "20240518",
+                "CxId"                  : reqData["CxId"],
+                "PrivateAuthType"       : reqData["PrivateAuthType"],
+                "ReqTxId"               : reqData["ReqTxId"],
+                "Token"                 : reqData["Token"],
+                "TxId"                  : reqData["TxId"],
+                "UserName"              : aesEncrypt(aesKey, aesIv, reqData["UserName"]),
+                "BirthDate"             : aesEncrypt(aesKey, aesIv, reqData["BirthDate"]),
+                "UserCellphoneNumber"   : aesEncrypt(aesKey, aesIv, reqData["UserCellphoneNumber"]),
+            },
+        }
+
+        url = apiHost+"api/v1.0/hirasimpleauth/hiraa050300000100";
+        # url = apiHost+"api/v1.0/hometaxsimpleauth/uternaat32";
+        
+        # API 호출
+        res         = requests.post(url, headers=options['headers'], json=options['json'])
+        print(f"res: {res.json()}")
