@@ -19,7 +19,7 @@ class NameField extends StatelessWidget {
       focusNode: focusNode,
       controller: controller,
       decoration: InputDecoration(
-        labelText: '이름을 입력하세요.',
+        labelText: '이름',
         labelStyle: labelTextStyle,
         border: OutlineInputBorder(),
       ),

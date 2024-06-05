@@ -8,7 +8,7 @@ import '../../utils/styles.dart';
 import '../success_page.dart';
 
 class ElderPage extends StatefulWidget {
-  const ElderPage({Key? key}) : super(key: key);
+  const ElderPage({super.key});
 
   @override
   _ElderPageState createState() => _ElderPageState();
@@ -26,8 +26,8 @@ class _ElderPageState extends State<ElderPage> {
 
   bool _isNameEntered = false;
   bool _isRrnEntered = false;
-  bool _isChecked1 = false;
-  bool _isChecked2 = false;
+  final bool _isChecked1 = false;
+  final bool _isChecked2 = false;
 
   @override
   void initState() {
