@@ -4,32 +4,40 @@ import 'package:flutter/services.dart';
 class PhoneNumberField extends StatelessWidget {
   final FocusNode focusNode;
   final TextEditingController controller;
+  final Function onChanged;
 
   const PhoneNumberField({
     Key? key,
     required this.focusNode,
     required this.controller,
+    required this.onChanged,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      focusNode: focusNode,
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: '휴대폰 번호',
-        labelStyle: TextStyle(fontSize: 30),
-        hintText: "'-' 없이 입력",
-        border: OutlineInputBorder(),
-      ),
-      keyboardType: TextInputType.number,
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(11),
-        PhoneNumberFormatter(),
+    return Column(
+      children: [
+        TextField(
+          focusNode: focusNode,
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: '휴대폰 번호',
+            labelStyle: TextStyle(fontSize: 30),
+            hintText: "'-' 없이 입력",
+            border: OutlineInputBorder(),
+          ),
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(11),
+            PhoneNumberFormatter(),
+          ],
+          onChanged: (_) => onChanged(),
+          style: TextStyle(fontSize: 60),
+          textAlign: focusNode.hasFocus ? TextAlign.left : TextAlign.center,
+        ),
+        SizedBox(height: 40),
       ],
-      style: TextStyle(fontSize: 60),
-      textAlign: focusNode.hasFocus ? TextAlign.left : TextAlign.center,
     );
   }
 }
@@ -37,15 +45,15 @@ class PhoneNumberField extends StatelessWidget {
 class PhoneNumberFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    if (newValue.text.length < oldValue.text.length) {
-      return newValue;
-    }
-
     final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
     final buffer = StringBuffer();
-    for (int i = 0; i < digits.length; i++) {
+    const maxLength = 11;
+
+    for (int i = 0; i < digits.length && i < maxLength; i++) {
       buffer.write(digits[i]);
-      if (i == 2 || i == 6) buffer.write('-');
+      if ((i == 2 || i == 6) && i != digits.length - 1) {
+        buffer.write('-');
+      }
     }
 
     final formatted = buffer.toString();
