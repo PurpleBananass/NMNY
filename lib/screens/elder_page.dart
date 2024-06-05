@@ -73,6 +73,10 @@ class _ElderPageState extends State<ElderPage> {
     });
   }
 
+  void _handleRrnFirstFieldCompleted(String value) {
+    FocusScope.of(context).requestFocus(_rrnSecondFocusNode);
+  }
+
   void _handleRrnInput() {
     if (_rrnFirstController.text.length == 6 && _rrnSecondController.text.length == 7) {
       setState(() {
@@ -146,6 +150,7 @@ class _ElderPageState extends State<ElderPage> {
                 firstController: _rrnFirstController,
                 secondController: _rrnSecondController,
                 onChanged: _handleRrnInput,
+                onFirstFieldCompleted: _handleRrnFirstFieldCompleted,
               ),
             NameField(
               focusNode: _nameFocusNode,

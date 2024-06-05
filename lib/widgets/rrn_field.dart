@@ -8,6 +8,7 @@ class RrnField extends StatelessWidget {
   final TextEditingController firstController;
   final TextEditingController secondController;
   final Function onChanged;
+  final Function(String) onFirstFieldCompleted;
 
   const RrnField({
     Key? key,
@@ -16,6 +17,7 @@ class RrnField extends StatelessWidget {
     required this.firstController,
     required this.secondController,
     required this.onChanged,
+    required this.onFirstFieldCompleted,
   }) : super(key: key);
 
   @override
@@ -35,7 +37,12 @@ class RrnField extends StatelessWidget {
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(6),
           ],
-          onChanged: (_) => onChanged(),
+          onChanged: (value) {
+            onChanged();
+            if (value.length == 6) {
+              onFirstFieldCompleted(value);
+            }
+          },
           style: inputTextStyle,
           textAlign: firstFocusNode.hasFocus ? TextAlign.left : TextAlign.center,
         ),
