@@ -249,32 +249,6 @@ class _ElderPageState extends State<ElderPage> {
       ),
     );
   }
-
-  Widget _buildAuthOption(String label, String iconPath) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _selectedAuthOption = label;
-          });
-        },
-        child: Column(
-          children: <Widget>[
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Image.asset(iconPath, width: 50, height: 50),
-                if (_selectedAuthOption == label)
-                  Icon(Icons.check_circle, color: Colors.blue, size: 50),
-              ],
-            ),
-            SizedBox(height: 5),
-            Text(label),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class PhoneNumberFormatter extends TextInputFormatter {
