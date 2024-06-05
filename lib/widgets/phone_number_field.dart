@@ -4,11 +4,13 @@ import 'package:flutter/services.dart';
 class PhoneNumberField extends StatelessWidget {
   final FocusNode focusNode;
   final TextEditingController controller;
+  final Function onChanged;
 
   const PhoneNumberField({
     Key? key,
     required this.focusNode,
     required this.controller,
+    required this.onChanged,
   }) : super(key: key);
 
   @override
@@ -30,6 +32,7 @@ class PhoneNumberField extends StatelessWidget {
             LengthLimitingTextInputFormatter(11),
             PhoneNumberFormatter(),
           ],
+          onChanged: (_) => onChanged(),
           style: TextStyle(fontSize: 60),
           textAlign: focusNode.hasFocus ? TextAlign.left : TextAlign.center,
         ),
