@@ -28,7 +28,7 @@ class _ElderPageState extends State<ElderPage> {
   bool _isRrnEntered = false;
   final bool _isChecked1 = false;
   final bool _isChecked2 = false;
-
+  
   @override
   void initState() {
     super.initState();
@@ -125,11 +125,26 @@ class _ElderPageState extends State<ElderPage> {
     );
   }
 
+  String get _currentInputField {
+    if (_phoneFocusNode.hasFocus) {
+      return '휴대폰 번호 입력';
+    } else if (_rrnFirstFocusNode.hasFocus || _rrnSecondFocusNode.hasFocus) {
+      return '주민등록번호 입력';
+    } else if (_nameFocusNode.hasFocus) {
+      return '이름 입력';
+    } else {
+      return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('간편인증 요청을 위해'),
+        title: Text(
+          "본인인증",
+          style: TextStyle(fontSize: 24),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -137,13 +152,27 @@ class _ElderPageState extends State<ElderPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (_isRrnEntered)
+            SizedBox(height: 20),
+            Center(
+              child: Text(
+                _currentInputField,
+                style: TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            SizedBox(height: 40),
+            // 휴대폰 번호
+            if (_isRrnEntered) ...[
               PhoneNumberField(
                 focusNode: _phoneFocusNode,
                 controller: _phoneController,
               ),
+            ],
             SizedBox(height: 10),
-            if (_isNameEntered)
+            // 주민등록번호
+            if (_isNameEntered) ...[
               RrnField(
                 firstFocusNode: _rrnFirstFocusNode,
                 secondFocusNode: _rrnSecondFocusNode,
@@ -152,13 +181,15 @@ class _ElderPageState extends State<ElderPage> {
                 onChanged: _handleRrnInput,
                 onFirstFieldCompleted: _handleRrnFirstFieldCompleted,
               ),
+            ],
+            // 이름
             NameField(
               focusNode: _nameFocusNode,
               controller: _nameController,
               onSubmitted: _handleNameSubmit,
             ),
             SizedBox(height: 20),
-            if (!_isNameEntered) 
+            if (!_isNameEntered) ...[
               Center(
                 child: ElevatedButton(
                   onPressed: _handleNameSubmit,
@@ -169,6 +200,7 @@ class _ElderPageState extends State<ElderPage> {
                   child: Text('이름 입력 완료'),
                 ),
               ),
+            ]
           ],
         ),
       ),

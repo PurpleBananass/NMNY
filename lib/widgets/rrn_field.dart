@@ -64,7 +64,7 @@ class RrnField extends StatelessWidget {
           style: inputTextStyle,
           textAlign: secondFocusNode.hasFocus ? TextAlign.left : TextAlign.center,
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 40),
       ],
     );
   }
