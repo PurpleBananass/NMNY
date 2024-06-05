@@ -166,8 +166,8 @@ class _ElderPageState extends State<ElderPage> {
                 TextField (
                   focusNode: _rrnSecondFocusNode,
                   controller: _rrnSecondController,
-                  obscureText: true,
-                  obscuringCharacter: '*',
+                  // obscureText: true,
+                  // obscuringCharacter: '*',
                   decoration: InputDecoration(
                     labelText: '주민등록번호 뒷자리',
                     labelStyle: TextStyle(fontSize: 40),
@@ -182,6 +182,7 @@ class _ElderPageState extends State<ElderPage> {
                   style: TextStyle(fontSize: 80),
                   textAlign: _rrnSecondFocusNode.hasFocus ? TextAlign.left : TextAlign.center,
                 ),
+                SizedBox(height: 20),
               ],
 
               // 이름
@@ -189,19 +190,28 @@ class _ElderPageState extends State<ElderPage> {
                 focusNode: _nameFocusNode,
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: '이름',
-                  hintText: '김찐삼',
+                  labelText: '이름을 입력하세요.',
+                  labelStyle: TextStyle(fontSize: 40),
                   border: OutlineInputBorder(),
                 ),
                 onSubmitted: (value) => _handleNameSubmit(),
+                style: TextStyle(fontSize: 80),
+                textAlign: _nameFocusNode.hasFocus ? TextAlign.left : TextAlign.center,
               ),
               SizedBox(height: 20),
 
               // 이름 입력 완료 버튼
-              ElevatedButton(
-                onPressed: _handleNameSubmit,
-                child: Text('이름 입력 완료'),
-              ),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _handleNameSubmit,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 100, vertical: 20),
+                    textStyle: TextStyle(fontSize: 40),
+                  ),
+                  child: Text('이름 입력 완료'),
+                ),
+              )
+              
 
               // 약관 동의
               // ElevatedButton(
