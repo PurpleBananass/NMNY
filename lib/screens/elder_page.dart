@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../widgets/phone_number_field.dart';
-import '../widgets/rrn_field.dart';
-import '../widgets/name_field.dart';
-import '../services/api_service.dart';
-import '../utils/validators.dart';
-import '../utils/styles.dart';
-import 'success_page.dart';
+import '../../widgets/phone_number_field.dart';
+import '../../widgets/rrn_field.dart';
+import '../../widgets/name_field.dart';
+import '../../services/api_service.dart';
+import '../../utils/validators.dart';
+import '../../utils/styles.dart';
+import '../success_page.dart';
 
 class ElderPage extends StatefulWidget {
   const ElderPage({Key? key}) : super(key: key);
@@ -153,16 +153,17 @@ class _ElderPageState extends State<ElderPage> {
               onSubmitted: _handleNameSubmit,
             ),
             SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: _handleNameSubmit,
-                style: ElevatedButton.styleFrom(
-                  padding: inputPadding,
-                  textStyle: buttonTextStyle,
+            if (!_isNameEntered) 
+              Center(
+                child: ElevatedButton(
+                  onPressed: _handleNameSubmit,
+                  style: ElevatedButton.styleFrom(
+                    padding: inputPadding,
+                    textStyle: buttonTextStyle,
+                  ),
+                  child: Text('이름 입력 완료'),
                 ),
-                child: Text('이름 입력 완료'),
               ),
-            ),
           ],
         ),
       ),
