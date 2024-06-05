@@ -20,6 +20,8 @@ class _ElderPageState extends State<ElderPage> {
   final TextEditingController _rrnSecondController = TextEditingController();
   final FocusNode _nameFocusNode = FocusNode();
   final FocusNode _rrnFirstFocusNode = FocusNode();
+  final FocusNode _rrnSecondFocusNode = FocusNode();
+  final FocusNode _phoneFocusNode = FocusNode();
 
   bool _isChecked1 = false;
   bool _isChecked2 = false;
@@ -28,6 +30,7 @@ class _ElderPageState extends State<ElderPage> {
   bool _isChecked5 = false;
 
   bool _isNameEntered = false;
+  bool _isRrnEntered = false;
 
   @override
   void initState() {
@@ -41,6 +44,8 @@ class _ElderPageState extends State<ElderPage> {
   void dispose() {
     _nameFocusNode.dispose();
     _rrnFirstFocusNode.dispose();
+    _rrnSecondFocusNode.dispose();
+    _phoneFocusNode.dispose();
     super.dispose();
   }
 
@@ -51,6 +56,17 @@ class _ElderPageState extends State<ElderPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_rrnFirstFocusNode);
     });
+  }
+
+  void _handleRrnInput() {
+    if (_rrnFirstController.text.length == 6 && _rrnSecondController.text.length == 7) {
+      setState(() {
+        _isRrnEntered = true;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        FocusScope.of(context).requestFocus(_phoneFocusNode);
+      });
+    }
   }
 
   Future<void> _submitData() async {
@@ -99,7 +115,8 @@ class _ElderPageState extends State<ElderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( // 상단바
+      appBar: AppBar(
+        // 상단바
         title: Text('간편인증 요청을 위해'),
         centerTitle: true,
       ),
@@ -109,48 +126,10 @@ class _ElderPageState extends State<ElderPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              if (_isNameEntered) ...[ // 이름 입력 완료 시
-                Row( // 주민등록번호 입력
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        focusNode: _rrnFirstFocusNode,
-                        controller: _rrnFirstController,
-                        decoration: InputDecoration(
-                          labelText: '주민등록번호 앞자리',
-                          hintText: '123456',
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(6),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Text('-'),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: TextField(
-                        controller: _rrnSecondController,
-                        decoration: InputDecoration(
-                          labelText: '주민등록번호 뒷자리',
-                          hintText: '1234567',
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(7),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
+              // 휴대폰 번호, 생년월일, 본인인증 수단
+              if (_isRrnEntered) ...[
                 TextField(
-                  // 휴대폰 번호 입력`
+                  focusNode: _phoneFocusNode,
                   controller: _phoneController,
                   decoration: InputDecoration(
                     labelText: '휴대폰 번호',
@@ -164,8 +143,7 @@ class _ElderPageState extends State<ElderPage> {
                   ],
                 ),
                 SizedBox(height: 10),
-                TextField(
-                  // 생년월일 입력
+                TextField( // 생년월일 입력
                   controller: _birthDateController,
                   decoration: InputDecoration(
                     labelText: '생년월일',
@@ -257,7 +235,52 @@ class _ElderPageState extends State<ElderPage> {
                   title: Text('[필수] 개인정보 수집 및 이용 동의 (삼팔삼)'),
                 ),
               ],
-              // 이름 입력 필드
+              // 주민등록번호
+              if (_isNameEntered) ...[
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        focusNode: _rrnFirstFocusNode,
+                        controller: _rrnFirstController,
+                        decoration: InputDecoration(
+                          labelText: '주민등록번호 앞자리',
+                          hintText: '123456',
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(6),
+                        ],
+                        onChanged: (_) => _handleRrnInput(),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Text('-'),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        focusNode: _rrnSecondFocusNode,
+                        controller: _rrnSecondController,
+                        decoration: InputDecoration(
+                          labelText: '주민등록번호 뒷자리',
+                          hintText: '1234567',
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(7),
+                        ],
+                        onChanged: (_) => _handleRrnInput(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              SizedBox(height: 10),
+              // 이름
               TextField(
                 focusNode: _nameFocusNode,
                 controller: _nameController,
@@ -270,14 +293,11 @@ class _ElderPageState extends State<ElderPage> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _handleNameSubmit,
-                // style: ElevatedButton.styleFrom(
-                //   padding: EdgeInsets.symmetric(vertical: 20),
-                //   textStyle: TextStyle(fontSize: 18),
-                // ),
-                child: Text('이름 입력 완료'),
+              onPressed: _handleNameSubmit,
+              child: Text('이름 입력 완료'),
               ),
             ],
+            
           ),
         ),
       ),
@@ -313,7 +333,8 @@ class _ElderPageState extends State<ElderPage> {
 
 class BirthDateInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     final int newTextLength = newValue.text.length;
     int selectionIndex = newValue.selection.end;
 
