@@ -38,6 +38,8 @@ class _ElderPageState extends State<ElderPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_nameFocusNode);
     });
+    _rrnFirstFocusNode.addListener(() { setState(() {}); });
+    _rrnSecondFocusNode.addListener(() { setState(() {}); });
   }
 
   @override
@@ -237,49 +239,46 @@ class _ElderPageState extends State<ElderPage> {
               ],
               // 주민등록번호
               if (_isNameEntered) ...[
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        focusNode: _rrnFirstFocusNode,
-                        controller: _rrnFirstController,
-                        decoration: InputDecoration(
-                          labelText: '주민등록번호 앞자리',
-                          hintText: '123456',
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(6),
-                        ],
-                        onChanged: (_) => _handleRrnInput(),
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Text('-'),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: TextField(
-                        focusNode: _rrnSecondFocusNode,
-                        controller: _rrnSecondController,
-                        decoration: InputDecoration(
-                          labelText: '주민등록번호 뒷자리',
-                          hintText: '1234567',
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(7),
-                        ],
-                        onChanged: (_) => _handleRrnInput(),
-                      ),
-                    ),
+                TextField (
+                  focusNode: _rrnFirstFocusNode,
+                  controller: _rrnFirstController,
+                  decoration: InputDecoration(
+                    labelText: '주민등록번호 앞자리',
+                    labelStyle: TextStyle(fontSize: 40),
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(6),
                   ],
+                  onChanged: (_) => _handleRrnInput(),
+                  style: TextStyle(fontSize: 80),
+                  textAlign: _rrnFirstFocusNode.hasFocus ? TextAlign.left : TextAlign.center,
+                ),
+                // SizedBox(width: 10),
+                Center(child: Text('-', style: TextStyle(fontSize: 60))),
+                // SizedBox(width: 10),
+                TextField (
+                  focusNode: _rrnSecondFocusNode,
+                  controller: _rrnSecondController,
+                  obscureText: true,
+                  obscuringCharacter: '*',
+                  decoration: InputDecoration(
+                    labelText: '주민등록번호 뒷자리',
+                    labelStyle: TextStyle(fontSize: 40),
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(7),
+                  ],
+                  onChanged: (_) => _handleRrnInput(),
+                  style: TextStyle(fontSize: 80),
+                  textAlign: _rrnSecondFocusNode.hasFocus ? TextAlign.left : TextAlign.center,
                 ),
               ],
-              SizedBox(height: 10),
               // 이름
               TextField(
                 focusNode: _nameFocusNode,
