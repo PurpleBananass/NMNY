@@ -15,7 +15,6 @@ class _ElderPageState extends State<ElderPage> {
   String? _selectedAuthOption;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _birthDateController = TextEditingController();
   final TextEditingController _rrnFirstController = TextEditingController();
   final TextEditingController _rrnSecondController = TextEditingController();
   final FocusNode _nameFocusNode = FocusNode();
@@ -25,9 +24,6 @@ class _ElderPageState extends State<ElderPage> {
 
   bool _isChecked1 = false;
   bool _isChecked2 = false;
-  bool _isChecked3 = false;
-  bool _isChecked4 = false;
-  bool _isChecked5 = false;
 
   bool _isNameEntered = false;
   bool _isRrnEntered = false;
@@ -72,7 +68,7 @@ class _ElderPageState extends State<ElderPage> {
   }
 
   Future<void> _submitData() async {
-    if (!_isChecked1 || !_isChecked2 || !_isChecked3 || !_isChecked4 || !_isChecked5) {
+    if (!_isChecked1 || !_isChecked2) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('모든 약관에 동의해야 합니다.')));
       return;
     }
@@ -83,15 +79,11 @@ class _ElderPageState extends State<ElderPage> {
     final body = json.encode({
       'name': _nameController.text,
       'phone': _phoneController.text,
-      'birth_date': _birthDateController.text,
       'rrn': rrn,
       'auth_method': _selectedAuthOption,
       'agreements': {
         'agreement1': _isChecked1,
         'agreement2': _isChecked2,
-        'agreement3': _isChecked3,
-        'agreement4': _isChecked4,
-        'agreement5': _isChecked5,
       },
     });
 
@@ -128,115 +120,29 @@ class _ElderPageState extends State<ElderPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // 휴대폰 번호, 생년월일, 본인인증 수단
+              // 휴대폰 번호
               if (_isRrnEntered) ...[
                 TextField(
                   focusNode: _phoneFocusNode,
                   controller: _phoneController,
                   decoration: InputDecoration(
                     labelText: '휴대폰 번호',
-                    hintText: '010-1234-5678',
+                    labelStyle: TextStyle(fontSize: 40),
+                    hintText: "'-' 없이 입력",
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(11),
+                    PhoneNumberFormatter(),
                   ],
-                ),
-                SizedBox(height: 10),
-                TextField( // 생년월일 입력
-                  controller: _birthDateController,
-                  decoration: InputDecoration(
-                    labelText: '생년월일',
-                    hintText: 'yyyy/MM/dd',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.datetime,
-                  inputFormatters: [
-                    FilteringTextInputFormatter(RegExp(r'[\d/]'), allow: true),
-                    LengthLimitingTextInputFormatter(10),
-                    BirthDateInputFormatter(),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Text(
-                  '본인인증 수단',
-                  style: TextStyle(fontSize: 16),
-                ),
-                Row(
-                  children: <Widget>[
-                    _buildAuthOption('카카오톡 인증', 'assets/kakao_icon.png'),
-                    _buildAuthOption('PASS 인증', 'assets/pass_icon.png'),
-                  ],
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _submitData,
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    textStyle: TextStyle(fontSize: 18),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text('다음'),
-                      SizedBox(width: 10),
-                      Icon(Icons.arrow_forward),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  '약관에 모두 동의',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                CheckboxListTile(
-                  value: _isChecked1,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked1 = value ?? false;
-                    });
-                  },
-                  title: Text('[필수] 개인정보 이용 동의 (국세청)'),
-                ),
-                CheckboxListTile(
-                  value: _isChecked2,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked2 = value ?? false;
-                    });
-                  },
-                  title: Text('[필수] 제3자 정보제공 동의 (국세청)'),
-                ),
-                CheckboxListTile(
-                  value: _isChecked3,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked3 = value ?? false;
-                    });
-                  },
-                  title: Text('[필수] 개인정보 제3자 정보제공 동의 (삼팔삼)'),
-                ),
-                CheckboxListTile(
-                  value: _isChecked4,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked4 = value ?? false;
-                    });
-                  },
-                  title: Text('[필수] 고유식별정보 수집 및 이용 동의 (삼팔삼)'),
-                ),
-                CheckboxListTile(
-                  value: _isChecked5,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked5 = value ?? false;
-                    });
-                  },
-                  title: Text('[필수] 개인정보 수집 및 이용 동의 (삼팔삼)'),
+                  style: TextStyle(fontSize: 60),
+                  textAlign: _rrnFirstFocusNode.hasFocus ? TextAlign.left : TextAlign.center,
                 ),
               ],
+              SizedBox(height: 10),
+
               // 주민등록번호
               if (_isNameEntered) ...[
                 TextField (
@@ -256,9 +162,7 @@ class _ElderPageState extends State<ElderPage> {
                   style: TextStyle(fontSize: 80),
                   textAlign: _rrnFirstFocusNode.hasFocus ? TextAlign.left : TextAlign.center,
                 ),
-                // SizedBox(width: 10),
                 Center(child: Text('-', style: TextStyle(fontSize: 60))),
-                // SizedBox(width: 10),
                 TextField (
                   focusNode: _rrnSecondFocusNode,
                   controller: _rrnSecondController,
@@ -279,6 +183,7 @@ class _ElderPageState extends State<ElderPage> {
                   textAlign: _rrnSecondFocusNode.hasFocus ? TextAlign.left : TextAlign.center,
                 ),
               ],
+
               // 이름
               TextField(
                 focusNode: _nameFocusNode,
@@ -291,12 +196,54 @@ class _ElderPageState extends State<ElderPage> {
                 onSubmitted: (value) => _handleNameSubmit(),
               ),
               SizedBox(height: 20),
+
+              // 이름 입력 완료 버튼
               ElevatedButton(
-              onPressed: _handleNameSubmit,
-              child: Text('이름 입력 완료'),
+                onPressed: _handleNameSubmit,
+                child: Text('이름 입력 완료'),
               ),
+
+              // 약관 동의
+              // ElevatedButton(
+              //   onPressed: _submitData,
+              //   style: ElevatedButton.styleFrom(
+              //     padding: EdgeInsets.symmetric(vertical: 20),
+              //     textStyle: TextStyle(fontSize: 18),
+              //   ),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: <Widget>[
+              //       Text('다음'),
+              //       SizedBox(width: 10),
+              //       Icon(Icons.arrow_forward),
+              //     ],
+              //   ),
+              // ),
+              // SizedBox(height: 20),
+              // Text(
+              //   '약관에 모두 동의',
+              //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              // ),
+              // CheckboxListTile(
+              //   value: _isChecked1,
+              //   onChanged: (bool? value) {
+              //     setState(() {
+              //       _isChecked1 = value ?? false;
+              //     });
+              //   },
+              //   title: Text('[필수] 개인정보 이용 동의 (국세청)'),
+              // ),
+              // CheckboxListTile(
+              //   value: _isChecked2,
+              //   onChanged: (bool? value) {
+              //     setState(() {
+              //       _isChecked2 = value ?? false;
+              //     });
+              //   },
+              //   title: Text('[필수] 제3자 정보제공 동의 (국세청)'),
+              // ),
+              
             ],
-            
           ),
         ),
       ),
@@ -330,26 +277,26 @@ class _ElderPageState extends State<ElderPage> {
   }
 }
 
-class BirthDateInputFormatter extends TextInputFormatter {
+class PhoneNumberFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    final int newTextLength = newValue.text.length;
-    int selectionIndex = newValue.selection.end;
-
-    String formattedText = newValue.text;
-
-    if (newTextLength == 4 || newTextLength == 7) {
-      formattedText += '/';
-      selectionIndex++;
-    } else if (newTextLength > 10) {
-      formattedText = oldValue.text;
-      selectionIndex = oldValue.selection.end;
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    // If the text is being deleted, simply return the new value
+    if (newValue.text.length < oldValue.text.length) {
+      return newValue;
     }
 
-    return TextEditingValue(
-      text: formattedText,
-      selection: TextSelection.collapsed(offset: selectionIndex),
+    // Format the new text value with hyphens
+    final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+    final buffer = StringBuffer();
+    for (int i = 0; i < digits.length; i++) {
+      buffer.write(digits[i]);
+      if (i == 2 || i == 6) buffer.write('-');
+    }
+
+    final formatted = buffer.toString();
+    return newValue.copyWith(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }
