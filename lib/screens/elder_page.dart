@@ -103,95 +103,188 @@ class _ElderPageState extends State<ElderPage> {
     }
   }
 
+  // void _showAgreementModal() {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     builder: (BuildContext context) {
+  //       return StatefulBuilder(
+  //         builder: (BuildContext context, StateSetter setState) {
+  //           return Container( 
+  //             height: MediaQuery.of(context).size.height * 0.3, 
+  //             child: Column(
+  //               children: [
+  //                 Padding(
+  //                   padding: const EdgeInsets.all(16.0),
+  //                   child: Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       Text(
+  //                         '서비스 약관 동의',
+  //                         style: TextStyle(
+  //                           fontSize: 24,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                       IconButton(
+  //                         icon: Icon(Icons.close),
+  //                         onPressed: () {
+  //                           Navigator.of(context).pop();
+  //                         },
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   child: SingleChildScrollView(
+  //                     child: ListBody(
+  //                       children: <Widget>[
+  //                         CheckboxListTile(
+  //                           controlAffinity: ListTileControlAffinity.leading,
+  //                           title: Text('개인정보이용 동의'),
+  //                           value: _isChecked1,
+  //                           onChanged: (value) {
+  //                             setState(() {
+  //                               _isChecked1 = value ?? false;
+  //                             });
+  //                           },
+  //                         ),
+  //                         CheckboxListTile(
+  //                           controlAffinity: ListTileControlAffinity.leading,
+  //                           title: Text('고유식별정보처리 동의'),
+  //                           value: _isChecked2,
+  //                           onChanged: (value) {
+  //                             setState(() {
+  //                               _isChecked2 = value ?? false;
+  //                             });
+  //                           },
+  //                         ),
+  //                         // ... (다른 약관 추가) ...
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                   padding: const EdgeInsets.all(16.0),
+  //                   child: ElevatedButton(
+  //                     style: ElevatedButton.styleFrom(
+  //                       minimumSize: Size(double.infinity, 60),
+  //                     ),
+  //                     onPressed: () {
+  //                       setState(() {
+  //                         _isChecked1 = true;
+  //                         _isChecked2 = true;
+  //                         // ... (다른 약관 전체 선택) ...
+  //                       });
+  //                       Navigator.of(context).pop();
+  //                     },
+  //                     child: Text(
+  //                       '전체 동의',
+  //                       style: TextStyle(fontSize: 24),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
+
+
   void _showAgreementModal() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return Container( 
-              height: MediaQuery.of(context).size.height * 0.3, 
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '서비스 약관 동의',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '서비스 약관 동의',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
-                        IconButton(
-                          icon: Icon(Icons.close),
-                          onPressed: () {
-                            Navigator.of(context).pop();
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: Text('개인정보이용 동의'),
+                          value: _isChecked1,
+                          onChanged: (value) {
+                            setState(() {
+                              _isChecked1 = value ?? false;
+                            });
                           },
                         ),
+                        CheckboxListTile(
+                          controlAffinity: ListTileControlAffinity.leading,
+                          title: Text('고유식별정보처리 동의'),
+                          value: _isChecked2,
+                          onChanged: (value) {
+                            setState(() {
+                              _isChecked2 = value ?? false;
+                            });
+                          },
+                        ),
+                        // ... (다른 약관 추가) ...
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: ListBody(
-                        children: <Widget>[
-                          CheckboxListTile(
-                            controlAffinity: ListTileControlAffinity.leading,
-                            title: Text('개인정보이용 동의'),
-                            value: _isChecked1,
-                            onChanged: (value) {
-                              setState(() {
-                                _isChecked1 = value ?? false;
-                              });
-                            },
-                          ),
-                          CheckboxListTile(
-                            controlAffinity: ListTileControlAffinity.leading,
-                            title: Text('고유식별정보처리 동의'),
-                            value: _isChecked2,
-                            onChanged: (value) {
-                              setState(() {
-                                _isChecked2 = value ?? false;
-                              });
-                            },
-                          ),
-                          // ... (다른 약관 추가) ...
-                        ],
-                      ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 60),
+                    ),
+                    onPressed: () async {
+                      setState(() {
+                        _isChecked1 = true;
+                        _isChecked2 = true;
+                        // ... (다른 약관 전체 선택) ...
+                      });
+                      Navigator.of(context).pop();
+                      await _submitData(); // Call the submit function here
+                    },
+                    child: Text(
+                      '전체 동의',
+                      style: TextStyle(fontSize: 24),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(double.infinity, 60),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isChecked1 = true;
-                          _isChecked2 = true;
-                          // ... (다른 약관 전체 선택) ...
-                        });
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        '전체 동의',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 
   Future<void> _submitData() async {
     if (!isAllChecked(_isChecked1, _isChecked2)) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'medication_info_page.dart';
 
 class NewPage extends StatelessWidget {
   const NewPage({Key? key}) : super(key: key);
@@ -17,27 +18,35 @@ class NewPage extends StatelessWidget {
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
           children: <Widget>[
-            _buildGridItem('내가 먹는 약'),
-            _buildGridItem('알레르기'),
-            _buildGridItem('한약'),
-            _buildGridItem('서비스 이름'),
+            _buildGridItem(context, '내가 먹는 약', MedicationInfoPage()),
+            _buildGridItem(context, '알레르기', Placeholder()),
+            _buildGridItem(context, '한약', Placeholder()),
+            _buildGridItem(context, '서비스 이름', Placeholder()),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildGridItem(String title) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.greenAccent,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(
-        child: Text(
-          title,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
+  Widget _buildGridItem(BuildContext context, String title, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => page),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.greenAccent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

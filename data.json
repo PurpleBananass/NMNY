@@ -1,0 +1,11 @@
+{
+    "ApiTxKey": "758b184a-288e-4a10-a6bf-6bd53eba61b2",
+    "Status": "Error",
+    "StatusSeq": 1,
+    "ErrorCode": 0,
+    "Message": "예기치 않은 오류가 발견되었습니다. ErrorLog를 확인하세요.",
+    "ErrorLog": null,
+    "TargetCode": null,
+    "TargetMessage": null,
+    "PointBalance": null
+}

@@ -75,9 +75,11 @@ def request_auth(data):
     # auth_type = data["PrivateAuthType"]#EDIT!!!!
     # 주민등록번호 앞자리
     name = data["name"]
-    birth = data["birth_date"].split("/")
-    birth_date = birth[0]+birth[1]+birth[2]
-    number = data["phone"]
+    # birth = data["birth_date"].split("/")
+    # birth_date = birth[0]+birth[1]+birth[2]
+    birth_date = birth(data["rrn"])
+    print(birth_date)
+    number = data["phone"].replace('-','')
     id_num = data["rrn"]
     # API 요청 파라미터 설정
     options     = {
@@ -100,15 +102,16 @@ def request_auth(data):
     # API 호출
     # print(options['json'])
     res         = requests.post(url, headers=options['headers'], json=options['json'])
-    # print(f"res: {res.json()}")
+    print(f"res: {res.json()}")
     # return data
     return res.json()
 
-def med_info(reqData):
+def med_info(reqData,rrn):
     
     # reqData = res.json()
     print(reqData["ResultData"])
     u = input("Y/N")
+    birth_date = birth(rrn)
     if input != "no":
         print("S")
         # API 요청 파라미터 설정
@@ -120,7 +123,7 @@ def med_info(reqData):
             },
             
             "json": {
-                "IdentityNumber"        : aesEncrypt(aesKey, aesIv, id_num),
+                "IdentityNumber"        : aesEncrypt(aesKey, aesIv, rrn),
                 "StartDate"             : "20230630",
                 "EndDate"               : "20240518",
                 "CxId"                  : reqData["CxId"],
@@ -129,7 +132,7 @@ def med_info(reqData):
                 "Token"                 : reqData["Token"],
                 "TxId"                  : reqData["TxId"],
                 "UserName"              : aesEncrypt(aesKey, aesIv, reqData["UserName"]),
-                "BirthDate"             : aesEncrypt(aesKey, aesIv, reqData["BirthDate"]),
+                "BirthDate"             : aesEncrypt(aesKey, aesIv, birth_date),
                 "UserCellphoneNumber"   : aesEncrypt(aesKey, aesIv, reqData["UserCellphoneNumber"]),
             },
         }
@@ -140,3 +143,15 @@ def med_info(reqData):
         # API 호출
         res         = requests.post(url, headers=options['headers'], json=options['json'])
         print(f"res: {res.json()}")
+
+
+
+def birth(rrn):
+    if int(rrn[:2]) < 21 and int(rrn[6]) in (3, 4) :
+        biryear = 2000 + int(rrn[:2])
+    else:
+        biryear = 1900 + int(rrn[:2])
+    birmonth = int(rrn[2:4])
+    birmonth = format(birmonth,'02d')
+    birday = int(rrn[4:6])
+    return str(biryear) + str(birmonth) + str(birday)
