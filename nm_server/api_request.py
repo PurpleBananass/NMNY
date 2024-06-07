@@ -4,12 +4,10 @@ from Crypto import PublicKey
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5, AES
 
-
 apiHost = 'https://api.tilko.net/'
 # apiKey  = 'bcdb5762c50341e9b42cff6e15aa0c2d'
 apiKey = '8913ef8fd48e4d5daf1d38aaf9209400'
 
-# AES 암호화 함수
 def aesEncrypt(key, iv, plainText):
     def pad(text):
         text_length     = len(text)
@@ -39,8 +37,6 @@ def aesEncrypt(key, iv, plainText):
     else:
         return base64.b64encode(cipher.encrypt(plainText.encode('utf-8'))).decode('utf-8')
 
-
-# RSA 암호화 함수(RSA 공개키로 AES키 암호화)
 def rsaEncrypt(publicKey, aesKey):
     rsa             = RSA.importKey(base64.b64decode(publicKey))
     cipher          = PKCS1_v1_5.new(rsa.publickey())
@@ -48,7 +44,6 @@ def rsaEncrypt(publicKey, aesKey):
     return aesCipherKey
 
 
-# RSA 공개키(Public Key) 조회 함수
 def getPublicKey():
     headers = {'Content-Type': 'application/json'}
     response = requests.get(apiHost + "/api/Auth/GetPublicKey?APIkey=" + apiKey, headers=headers)
@@ -56,34 +51,22 @@ def getPublicKey():
 
 
 def request_auth(data):
-    # RSA Public Key 조회
     rsaPublicKey    = getPublicKey()
-    print(f"rsaPublicKey: {rsaPublicKey}")
 
-
-    # AES Secret Key 및 IV 생성
     aesKey          = os.urandom(16)
     aesIv           = ('\x00' * 16).encode('utf-8')
 
-
-    # AES Key를 RSA Public Key로 암호화
     aesCipherKey    = base64.b64encode(rsaEncrypt(rsaPublicKey, aesKey))
-    print(f"aesCipherKey: {aesCipherKey}")
 
 
-    # API URL 설정(정부24 간편인증 요청: https://tilko.net/Help/Api/POST-api-apiVersion-GovSimpleAuth-SimpleAuthRequest)
     url         = apiHost + "api/v1.0/hirasimpleauth/simpleauthrequest";
-    # auth_type = data["PrivateAuthType"]#EDIT!!!!
-    # 주민등록번호 앞자리
+
     name = data["name"]
-    # birth = data["birth_date"].split("/")
-    # birth_date = birth[0]+birth[1]+birth[2]
+
     birth_date = birth(data["rrn"])
-    print(birth_date)
     number = data["phone"].replace('-','')
     id_num = data["rrn"]
-    print(id_num)
-    # API 요청 파라미터 설정
+
     options     = {
         "headers": {
             "Content-Type"          : "application/json",
@@ -100,63 +83,42 @@ def request_auth(data):
         },
     }
 
-
-    # API 호출
-    # print(options['json'])
     res         = requests.post(url, headers=options['headers'], json=options['json'])
-    # print(f"res: {res.json()}")
-    # return data
     return res.json()
 
 def med_info(reqData,rrn):
     rsaPublicKey    = getPublicKey()
-    # print(f"rsaPublicKey: {rsaPublicKey}")
 
-
-    # AES Secret Key 및 IV 생성
     aesKey          = os.urandom(16)
     aesIv           = ('\x00' * 16).encode('utf-8')
 
-
-    # AES Key를 RSA Public Key로 암호화
     aesCipherKey    = base64.b64encode(rsaEncrypt(rsaPublicKey, aesKey))
-    # reqData = res.json()
-    # print(reqData["ResultData"])
-    # return
-    u = input("Y/N")
     birth_date = birth(rrn)
-    if input != "no":
-        print("S")
-        # API 요청 파라미터 설정
-        options     = {
-            "headers": {
-                "Content-Type"          : "application/json",
-                "API-KEY"               : apiKey,
-                "ENC-KEY"               : aesCipherKey
-            },
-            
-            "json": {
-                "IdentityNumber"        : aesEncrypt(aesKey, aesIv, rrn),
-                "StartDate"             : "20230630",
-                "EndDate"               : "20240518",
-                "CxId"                  : reqData["CxId"],
-                "PrivateAuthType"       : reqData["PrivateAuthType"],
-                "ReqTxId"               : reqData["ReqTxId"],
-                "Token"                 : reqData["Token"],
-                "TxId"                  : reqData["TxId"],
-                "UserName"              : aesEncrypt(aesKey, aesIv, reqData["UserName"]),
-                "BirthDate"             : aesEncrypt(aesKey, aesIv, birth_date),
-                "UserCellphoneNumber"   : aesEncrypt(aesKey, aesIv, reqData["UserCellphoneNumber"]),
-            },
+    options     = {
+        "headers": {
+            "Content-Type"          : "application/json",
+            "API-KEY"               : apiKey,
+            "ENC-KEY"               : aesCipherKey
+        },
+        
+        "json": {
+            "IdentityNumber"        : aesEncrypt(aesKey, aesIv, rrn),
+            "StartDate"             : "20230630",
+            "EndDate"               : "20240518",
+            "CxId"                  : reqData["CxId"],
+            "PrivateAuthType"       : reqData["PrivateAuthType"],
+            "ReqTxId"               : reqData["ReqTxId"],
+            "Token"                 : reqData["Token"],
+            "TxId"                  : reqData["TxId"],
+            "UserName"              : aesEncrypt(aesKey, aesIv, reqData["UserName"]),
+            "BirthDate"             : aesEncrypt(aesKey, aesIv, birth_date),
+            "UserCellphoneNumber"   : aesEncrypt(aesKey, aesIv, reqData["UserCellphoneNumber"]),
+        },
         }
 
-        url = apiHost+"api/v1.0/hirasimpleauth/hiraa050300000100";
-        # url = apiHost+"api/v1.0/hometaxsimpleauth/uternaat32";
-        
-        # API 호출
-        res         = requests.post(url, headers=options['headers'], json=options['json'])
-        print(f"res: {res.json()}")
-        return res.json()
+    url = apiHost+"api/v1.0/hirasimpleauth/hiraa050300000100";
+    res         = requests.post(url, headers=options['headers'], json=options['json'])
+    return res.json()
 
 
 
@@ -169,3 +131,5 @@ def birth(rrn):
     birmonth = format(birmonth,'02d')
     birday = int(rrn[4:6])
     return str(biryear) + str(birmonth) + str(birday)
+
+

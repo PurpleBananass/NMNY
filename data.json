@@ -1,15 +1,15 @@
 {
     "ResultData": {
-        "Token": "eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiN0oyMDdLU0E3SnF3IiwicGhvbmUiOiJNREV3T0RrME1EY3lORGc9Iiwic3NuMSI6Ik9UZ3dPVEk1Iiwic3NuMiI6Ik1USXlNalV4T0E9PSIsImJpcnRoZGF5IjoiTVRrNU9EQTVNams9IiwiY3hJZCI6IjAxNGI1ODJkZDQtZDdiNS00MmM1LTgxZmItMjRlMWY4Njg5YzUxIiwianRpIjoiN2M0ZmUxYzRhZjk2NGE4Y2JmMzc3ZTBmNjNmMTY3ZDBpanA1cXR6aSIsImlzcyI6Im9hY3gtc2VydmVyLVlvdXJOYW1lIiwic3ViIjoiQUZURVJfUkVRVUVTVCIsImlhdCI6MTcxNzczOTQ3NSwiZXhwIjoxNzE3NzM5Nzc1LCJwcmkiOiJ5Um1LZWhiUStXQVV5TFRvV0QzZkJrQ2VhN2V5WXV1WWJZWkU1SFFwVE9jPSJ9.USmr1-3j29YfA4XHbFmOV8ORo_bPc2ve43m-zLHTtyY",
-        "TxId": "7c4fe1c4af964a8cbf377e0f63f167d0ijp5qtzi",
-        "CxId": "014b582dd4-d7b5-42c5-81fb-24e1f8689c51",
-        "ReqTxId": "7c4fe1c4af964a8cbf377e0f63f167d0ijp5qtzi",
+        "Token": "eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiN0oyMDdLU0E3SnF3IiwicGhvbmUiOiJNREV3T0RrME1EY3lORGc9Iiwic3NuMSI6Ik9UZ3dPVEk1Iiwic3NuMiI6Ik1USXlNalV4T0E9PSIsImJpcnRoZGF5IjoiTVRrNU9EQTVNams9IiwiY3hJZCI6IjAxNzJhYTFmZWUtOGYyMy00ZTJiLWJhNGEtNmUzODE3ZTZmNjdlIiwianRpIjoiYTBmN2EyNjhlYmVlNGVkZTkzNjI0ZDcyODJlYTlmNjcwMTl0dnIyMiIsImlzcyI6Im9hY3gtc2VydmVyLVlvdXJOYW1lIiwic3ViIjoiQUZURVJfUkVRVUVTVCIsImlhdCI6MTcxNzc2ODE4MiwiZXhwIjoxNzE3NzY4NDgyLCJwcmkiOiI1TnBsRUNqSjUzN2dZSnNqVDFBZUZrenBlOU43R1RDR3hCSkVDNUJjQzdjPSJ9.n3dnleP8jjmDamsXYw3WcORUhS5iftepyAem1h35KD8",
+        "TxId": "a0f7a268ebee4ede93624d7282ea9f67019tvr22",
+        "CxId": "0172aa1fee-8f23-4e2b-ba4a-6e3817e6f67e",
+        "ReqTxId": "a0f7a268ebee4ede93624d7282ea9f67019tvr22",
         "PrivateAuthType": "KakaoTalk",
         "UserName": "이준우",
         "BirthDate": "00010101",
         "UserCellphoneNumber": "01089407248"
     },
-    "ApiTxKey": "8acb7d76-d013-4721-a31f-0ff47b58a445",
+    "ApiTxKey": "c547bdfb-87ff-4894-8640-1becc277129a",
     "Status": "OK",
     "StatusSeq": 0,
     "ErrorCode": 0,
@@ -17,5 +17,5 @@
     "ErrorLog": null,
     "TargetCode": null,
     "TargetMessage": null,
-    "PointBalance": "9000.00"
+    "PointBalance": "8500.00"
 }

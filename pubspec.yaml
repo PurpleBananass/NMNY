@@ -31,7 +31,11 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.13.3
-
+  shared_preferences: ^2.0.6  # Check for the latest version
+  qr_flutter: ^4.0.0
+  flutter_pdfview: ^1.0.4  # Check for the latest version
+  dio: ^4.0.0  # Check for the latest version
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,6 +44,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+    
   
 
   # The "flutter_lints" package below contains a set of recommended lints to

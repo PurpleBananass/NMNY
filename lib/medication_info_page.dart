@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class MedicationInfoPage extends StatefulWidget {
   @override
@@ -11,6 +13,7 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
   bool _isLoading = true;
   bool _hasError = false;
   List<dynamic> _medications = [];
+  String? _qrCodeUrl;
 
   @override
   void initState() {
@@ -19,15 +22,30 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
   }
 
   Future<void> _fetchMedicationInfo() async {
-    final url = Uri.parse('http://10.0.2.2:5000/api/medication'); // Update with your actual API URL
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? rrn = prefs.getString('rrn');
+
+    if (rrn == null) {
+      setState(() {
+        _hasError = true;
+        _isLoading = false;
+      });
+      return;
+    }
+
+    final url = Uri.parse('http://10.0.2.2:5000/medication');
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({'rrn': rrn});
+
     try {
-      final response = await http.get(url);
+      final response = await http.post(url, headers: headers, body: body);
       print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      print('Response body: ${utf8.decode(response.bodyBytes)}');
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           _medications = data['ResultList'];
+          _qrCodeUrl = 'http://10.0.2.2:5000/medications/pdf?rrn=$rrn';  // URL to generate PDF
           _isLoading = false;
         });
       } else {
@@ -96,12 +114,26 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
           ? Center(child: CircularProgressIndicator())
           : _hasError
               ? Center(child: Text('Error fetching data'))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  itemCount: _medications.length,
-                  itemBuilder: (context, index) {
-                    return _buildMedicationCard(_medications[index]);
-                  },
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16.0),
+                        itemCount: _medications.length,
+                        itemBuilder: (context, index) {
+                          return _buildMedicationCard(_medications[index]);
+                        },
+                      ),
+                    ),
+                    if (_qrCodeUrl != null)
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: QrImageView(
+                          data: _qrCodeUrl!,
+                          size: 200,
+                        ),
+                      ),
+                  ],
                 ),
     );
   }

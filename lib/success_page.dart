@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'new_page.dart';  // Ensure this import points to your new page file
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'new_page.dart';
 class SuccessPage extends StatelessWidget {
   final String rrn;
+  // final String birthDate;
 
   const SuccessPage({Key? key, required this.rrn}) : super(key: key);
 
@@ -13,11 +14,16 @@ class SuccessPage extends StatelessWidget {
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({
       'rrn': rrn,
+      // 'birth_date': birthDate,
     });
 
     try {
       final response = await http.post(url, headers: headers, body: body);
       if (response.statusCode == 200) {
+        // Save RRN to local cache
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('rrn', rrn);
+
         // Navigate to the new page if the response is successful
         Navigator.push(context, MaterialPageRoute(builder: (context) => NewPage()));
       } else {
@@ -68,7 +74,7 @@ class SuccessPage extends StatelessWidget {
           children: <Widget>[
             SizedBox(height: 20),
             Text(
-              '카카오톡 모바일인증을 진행해주세요.',
+              'KB모바일인증을 진행해주세요.',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -85,23 +91,23 @@ class SuccessPage extends StatelessWidget {
                   children: <Widget>[
                     Icon(Icons.message, size: 50),
                     SizedBox(height: 10),
-                    Text('STEP 01\n카카오톡에서\n메시지 확인 후 인증진행', textAlign: TextAlign.center),
+                    Text('STEP 01\nKB스타뱅킹앱에서\n메시지 확인', textAlign: TextAlign.center),
                   ],
                 ),
-                // Icon(Icons.arrow_forward, size: 30),
-                // Column(
-                //   children: <Widget>[
-                //     Icon(Icons.verified_user, size: 50),
-                //     SizedBox(height: 10),
-                //     Text('STEP 02\n모바일인증서\n인증진행', textAlign: TextAlign.center),
-                //   ],
-                // ),
+                Icon(Icons.arrow_forward, size: 30),
+                Column(
+                  children: <Widget>[
+                    Icon(Icons.verified_user, size: 50),
+                    SizedBox(height: 10),
+                    Text('STEP 02\nKB모바일인증서\n인증진행', textAlign: TextAlign.center),
+                  ],
+                ),
                 Icon(Icons.arrow_forward, size: 30),
                 Column(
                   children: <Widget>[
                     Icon(Icons.check_circle, size: 50),
                     SizedBox(height: 10),
-                    Text('STEP 02\n인증 완료 후,\n현재 화면의 인증 완료 클릭', textAlign: TextAlign.center),
+                    Text('STEP 03\n인증 완료 후,\n현재 화면의 인증 완료 클릭', textAlign: TextAlign.center),
                   ],
                 ),
               ],
