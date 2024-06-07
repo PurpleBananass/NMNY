@@ -244,7 +244,7 @@ class _ElderPageState extends State<ElderPage> {
       appBar: AppBar(
         title: Text(
           "본인인증",
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -303,6 +303,8 @@ class _ElderPageState extends State<ElderPage> {
                   style: ElevatedButton.styleFrom(
                     padding: inputPadding,
                     textStyle: buttonTextStyle,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color(0xff1c78e5),
                   ),
                   child: Text('이름 입력 완료'),
                 ),
