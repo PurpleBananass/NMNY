@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../utils/styles.dart';
 
 class PhoneNumberField extends StatelessWidget {
   final FocusNode focusNode;
@@ -22,7 +23,7 @@ class PhoneNumberField extends StatelessWidget {
           controller: controller,
           decoration: InputDecoration(
             labelText: '휴대폰 번호',
-            labelStyle: TextStyle(fontSize: 30),
+            labelStyle: labelTextStyle,
             hintText: "'-' 없이 입력",
             border: OutlineInputBorder(),
           ),
@@ -33,7 +34,7 @@ class PhoneNumberField extends StatelessWidget {
             PhoneNumberFormatter(),
           ],
           onChanged: (_) => onChanged(),
-          style: TextStyle(fontSize: 60),
+          style: inputTextStyle,
           textAlign: focusNode.hasFocus ? TextAlign.left : TextAlign.center,
         ),
         SizedBox(height: 40),

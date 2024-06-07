@@ -260,7 +260,7 @@ class _ElderPageState extends State<ElderPage> {
               child: Text(
                 _currentInputField,
                 style: TextStyle(
-                  fontSize: 48,
+                  fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
               ),

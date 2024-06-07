@@ -46,10 +46,11 @@ class RrnField extends StatelessWidget {
           style: inputTextStyle,
           textAlign: firstFocusNode.hasFocus ? TextAlign.left : TextAlign.center,
         ),
-        Center(child: Text('-', style: TextStyle(fontSize: 60))),
+        Center(child: Text('-', style: TextStyle(fontSize: 32))),
         TextField(
           focusNode: secondFocusNode,
           controller: secondController,
+          obscureText: true,
           decoration: InputDecoration(
             labelText: '주민등록번호 뒷자리',
             labelStyle: labelTextStyle,
