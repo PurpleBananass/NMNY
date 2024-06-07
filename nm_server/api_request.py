@@ -6,7 +6,8 @@ from Crypto.Cipher import PKCS1_v1_5, AES
 
 
 apiHost = 'https://api.tilko.net/'
-apiKey  = 'bcdb5762c50341e9b42cff6e15aa0c2d'
+# apiKey  = 'bcdb5762c50341e9b42cff6e15aa0c2d'
+apiKey = '8913ef8fd48e4d5daf1d38aaf9209400'
 
 # AES 암호화 함수
 def aesEncrypt(key, iv, plainText):
@@ -81,6 +82,7 @@ def request_auth(data):
     print(birth_date)
     number = data["phone"].replace('-','')
     id_num = data["rrn"]
+    print(id_num)
     # API 요청 파라미터 설정
     options     = {
         "headers": {
@@ -102,14 +104,25 @@ def request_auth(data):
     # API 호출
     # print(options['json'])
     res         = requests.post(url, headers=options['headers'], json=options['json'])
-    print(f"res: {res.json()}")
+    # print(f"res: {res.json()}")
     # return data
     return res.json()
 
 def med_info(reqData,rrn):
-    
+    rsaPublicKey    = getPublicKey()
+    # print(f"rsaPublicKey: {rsaPublicKey}")
+
+
+    # AES Secret Key 및 IV 생성
+    aesKey          = os.urandom(16)
+    aesIv           = ('\x00' * 16).encode('utf-8')
+
+
+    # AES Key를 RSA Public Key로 암호화
+    aesCipherKey    = base64.b64encode(rsaEncrypt(rsaPublicKey, aesKey))
     # reqData = res.json()
-    print(reqData["ResultData"])
+    # print(reqData["ResultData"])
+    # return
     u = input("Y/N")
     birth_date = birth(rrn)
     if input != "no":
@@ -143,6 +156,7 @@ def med_info(reqData,rrn):
         # API 호출
         res         = requests.post(url, headers=options['headers'], json=options['json'])
         print(f"res: {res.json()}")
+        return res.json()
 
 
 

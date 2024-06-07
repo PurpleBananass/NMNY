@@ -1,11 +1,21 @@
 {
-    "ApiTxKey": "758b184a-288e-4a10-a6bf-6bd53eba61b2",
-    "Status": "Error",
-    "StatusSeq": 1,
+    "ResultData": {
+        "Token": "eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiN0oyMDdLU0E3SnF3IiwicGhvbmUiOiJNREV3T0RrME1EY3lORGc9Iiwic3NuMSI6Ik9UZ3dPVEk1Iiwic3NuMiI6Ik1USXlNalV4T0E9PSIsImJpcnRoZGF5IjoiTVRrNU9EQTVNams9IiwiY3hJZCI6IjAxNGI1ODJkZDQtZDdiNS00MmM1LTgxZmItMjRlMWY4Njg5YzUxIiwianRpIjoiN2M0ZmUxYzRhZjk2NGE4Y2JmMzc3ZTBmNjNmMTY3ZDBpanA1cXR6aSIsImlzcyI6Im9hY3gtc2VydmVyLVlvdXJOYW1lIiwic3ViIjoiQUZURVJfUkVRVUVTVCIsImlhdCI6MTcxNzczOTQ3NSwiZXhwIjoxNzE3NzM5Nzc1LCJwcmkiOiJ5Um1LZWhiUStXQVV5TFRvV0QzZkJrQ2VhN2V5WXV1WWJZWkU1SFFwVE9jPSJ9.USmr1-3j29YfA4XHbFmOV8ORo_bPc2ve43m-zLHTtyY",
+        "TxId": "7c4fe1c4af964a8cbf377e0f63f167d0ijp5qtzi",
+        "CxId": "014b582dd4-d7b5-42c5-81fb-24e1f8689c51",
+        "ReqTxId": "7c4fe1c4af964a8cbf377e0f63f167d0ijp5qtzi",
+        "PrivateAuthType": "KakaoTalk",
+        "UserName": "이준우",
+        "BirthDate": "00010101",
+        "UserCellphoneNumber": "01089407248"
+    },
+    "ApiTxKey": "8acb7d76-d013-4721-a31f-0ff47b58a445",
+    "Status": "OK",
+    "StatusSeq": 0,
     "ErrorCode": 0,
-    "Message": "예기치 않은 오류가 발견되었습니다. ErrorLog를 확인하세요.",
+    "Message": "성공",
     "ErrorLog": null,
     "TargetCode": null,
     "TargetMessage": null,
-    "PointBalance": null
+    "PointBalance": "9000.00"
 }

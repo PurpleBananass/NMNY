@@ -19,9 +19,11 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
   }
 
   Future<void> _fetchMedicationInfo() async {
-    final url = Uri.parse('http://your-server-address/api/medication'); // Replace with your actual API URL
+    final url = Uri.parse('http://10.0.2.2:5000/api/medication'); // Update with your actual API URL
     try {
       final response = await http.get(url);
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
@@ -35,6 +37,7 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
         });
       }
     } catch (error) {
+      print('Error fetching data: $error');
       setState(() {
         _hasError = true;
         _isLoading = false;
