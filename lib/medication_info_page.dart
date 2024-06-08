@@ -33,7 +33,7 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
       return;
     }
 
-    final url = Uri.parse('http://10.0.2.2:5000/medication');
+    final url = Uri.parse('http://34.64.55.10:8080/medication');
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({'rrn': rrn});
 

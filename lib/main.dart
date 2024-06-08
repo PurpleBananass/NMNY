@@ -13,7 +13,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'User Selection',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color(0xff1c78e5),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          // enabledBorder: OutlineInputBorder(
+          //   borderSide: BorderSide(color: Colors.blue, width: 2.0),
+          // ), // 활성화된 상태에서의 테두리 색상과 두께
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0xff1c78e5), width: 2.0),
+          ), // 포커스된 상태에서의 테두리 색상과 두께
+          hintStyle: TextStyle(color: Colors.grey), // 힌트 텍스트 스타일
+          labelStyle: TextStyle(color: Color(0xff1c78e5)), // 라벨 텍스트 스타일
+          floatingLabelStyle: TextStyle(color: Color(0xff1c78e5)), // 라벨이 위로 올라갔을 때의 텍스트 스타일
+        ),
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Color(0xff1c78e5), // 텍스트 커서 색상
+          selectionColor: Color(0xff1c78e5), // 텍스트 선택 색상
+          selectionHandleColor: Color(0xff1c78e5), // 텍스트 선택 핸들 색상
+        ),
       ),
       home: UserSelectionPage(),
       routes: {
@@ -36,7 +54,7 @@ class UserSelectionPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('이용자 선택'),
+        title: Text('이용자 선택', style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: Center(
@@ -53,14 +71,14 @@ class UserSelectionPage extends StatelessWidget {
             SizedBox(height: 10),
             _buildButton(context, '의료진', Colors.green, buttonPadding, buttonTextSize),
             SizedBox(height: 10),
-            _buildButton(context, '어르신', Colors.blue, buttonPadding * 2, buttonTextSize * 1.2, large: true, route: '/elder'),
+            _buildButton(context, '어르신', Colors.blue, buttonPadding * 2, buttonTextSize * 1.2, large: true, route: '/elder', textColor: Colors.white),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildButton(BuildContext context, String text, Color color, double padding, double textSize, {bool large = false, String? route}) {
+  Widget _buildButton(BuildContext context, String text, Color color, double padding, double textSize, {bool large = false, String? route, Color textColor = Colors.black}) {
     var screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
       width: screenWidth * 0.8, // 버튼 너비 고정
@@ -71,9 +89,10 @@ class UserSelectionPage extends StatelessWidget {
           }
         },
         style: ElevatedButton.styleFrom(
+          foregroundColor: textColor,
           backgroundColor: color,
           padding: EdgeInsets.all(padding),
-          textStyle: TextStyle(fontSize: textSize, fontWeight: large ? FontWeight.bold : FontWeight.normal),
+          textStyle: TextStyle(fontSize: textSize, fontWeight: large ? FontWeight.bold : FontWeight.normal, color: Colors.black),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
