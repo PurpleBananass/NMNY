@@ -10,7 +10,7 @@ class SuccessPage extends StatelessWidget {
   const SuccessPage({Key? key, required this.rrn}) : super(key: key);
 
   Future<void> _completeAuthentication(BuildContext context) async {
-    final url = Uri.parse('http://10.0.2.2:5000/complete'); // Update with your server address
+    final url = Uri.parse('http://34.64.55.10:8080/complete'); // Update with your server address
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({
       'rrn': rrn,
