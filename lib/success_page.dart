@@ -74,13 +74,13 @@ class SuccessPage extends StatelessWidget {
           children: <Widget>[
             SizedBox(height: 20),
             Text(
-              'KB모바일인증을 진행해주세요.',
+              '카카오톡 모바일인증을 진행해주세요.',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
             Text(
-              '입력하신 휴대폰으로 인증 요청 메시지를 보냈습니다.\nKB스타뱅킹앱에서 인증을 진행해주세요.',
+              '입력하신 휴대폰으로 인증 요청 메시지를 보냈습니다.\n카카오톡앱에서 인증을 진행해주세요.',
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 40),
@@ -91,15 +91,7 @@ class SuccessPage extends StatelessWidget {
                   children: <Widget>[
                     Icon(Icons.message, size: 50),
                     SizedBox(height: 10),
-                    Text('STEP 01\nKB스타뱅킹앱에서\n메시지 확인', textAlign: TextAlign.center),
-                  ],
-                ),
-                Icon(Icons.arrow_forward, size: 30),
-                Column(
-                  children: <Widget>[
-                    Icon(Icons.verified_user, size: 50),
-                    SizedBox(height: 10),
-                    Text('STEP 02\nKB모바일인증서\n인증진행', textAlign: TextAlign.center),
+                    Text('STEP 01\n카카오톡앱에서\n메시지 확인', textAlign: TextAlign.center),
                   ],
                 ),
                 Icon(Icons.arrow_forward, size: 30),
@@ -107,7 +99,7 @@ class SuccessPage extends StatelessWidget {
                   children: <Widget>[
                     Icon(Icons.check_circle, size: 50),
                     SizedBox(height: 10),
-                    Text('STEP 03\n인증 완료 후,\n현재 화면의 인증 완료 클릭', textAlign: TextAlign.center),
+                    Text('STEP 02\n인증 완료 후,\n현재 화면의 인증 완료 클릭', textAlign: TextAlign.center),
                   ],
                 ),
               ],

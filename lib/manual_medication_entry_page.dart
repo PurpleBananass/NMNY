@@ -16,6 +16,7 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
   final _phoneNumberController = TextEditingController();
 
   List<Map<String, TextEditingController>> _drugControllers = [];
+  int _drugCounter = 1;
 
   @override
   void dispose() {
@@ -34,7 +35,7 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
   void _addDrug() {
     setState(() {
       _drugControllers.add({
-        'No': TextEditingController(),
+        'No': TextEditingController(text: _drugCounter.toString()),
         'Effect': TextEditingController(),
         'Code': TextEditingController(),
         'Name': TextEditingController(),
@@ -44,12 +45,18 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
         'DailyDose': TextEditingController(),
         'TotalDosingDays': TextEditingController(),
       });
+      _drugCounter++;
     });
   }
 
   void _removeDrug(int index) {
     setState(() {
       _drugControllers.removeAt(index);
+      _drugCounter--;
+      // Reassign drug numbers
+      for (int i = 0; i < _drugControllers.length; i++) {
+        _drugControllers[i]['No']!.text = (i + 1).toString();
+      }
     });
   }
 
@@ -119,7 +126,7 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
             children: <Widget>[
               TextFormField(
                 controller: _preparationNoController,
-                decoration: InputDecoration(labelText: 'Preparation No'),
+                decoration: InputDecoration(labelText: '일련번호'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the preparation number';
@@ -129,7 +136,7 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
               ),
               TextFormField(
                 controller: _preparationDateController,
-                decoration: InputDecoration(labelText: 'Date of Preparation (YYYY-MM-DD)'),
+                decoration: InputDecoration(labelText: '조제일자(YYYY-MM-DD)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the date of preparation';
@@ -139,7 +146,7 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
               ),
               TextFormField(
                 controller: _dispensaryController,
-                decoration: InputDecoration(labelText: 'Dispensary'),
+                decoration: InputDecoration(labelText: '조제기관'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the dispensary';
@@ -149,7 +156,7 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
               ),
               TextFormField(
                 controller: _phoneNumberController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
+                decoration: InputDecoration(labelText: '연락처'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the phone number';
@@ -182,7 +189,7 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
                         ...controllers.entries.map((controllerEntry) {
                           return TextFormField(
                             controller: controllerEntry.value,
-                            decoration: InputDecoration(labelText: controllerEntry.key),
+                            decoration: InputDecoration(labelText: _getLabelText(controllerEntry.key)),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter ${controllerEntry.key}';
@@ -215,5 +222,29 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
         ),
       ),
     );
+  }
+   String _getLabelText(String key) {
+    switch (key) {
+      case 'No':
+        return '번호';
+      case 'Effect':
+        return '약효';
+      case 'Code':
+        return '약품코드';
+      case 'Name':
+        return '제품명';
+      case 'Component':
+        return '성분명';
+      case 'Quantity':
+        return '함량';
+      case 'DosagePerOnce':
+        return '1회 투약량';
+      case 'DailyDose':
+        return '1일 투여횟수';
+      case 'TotalDosingDays':
+        return '총 투약일수';
+      default:
+        return key;
+    }
   }
 }
