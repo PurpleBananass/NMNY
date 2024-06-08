@@ -20,7 +20,7 @@ CORS(app)
 
 db_config = {
     'user': 'root',
-    'password': 'Ljhb!106424',
+    'password': '807ac496-ff5e-46bd-ae1e-bcd8c09c33e1',
     'host': 'localhost',
     'database': 'med_info_db'
 }
