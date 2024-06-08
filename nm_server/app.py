@@ -13,6 +13,9 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+import base64
+
 # from utils import *
 
 app = Flask(__name__)
@@ -175,6 +178,7 @@ def get_medications_pdf():
     rrn = request.args.get('rrn')
     if not rrn:
         return 'Missing RRN', 400
+    rrn = decrypt_rrn(rrn)
     data = query_database_to_json(rrn)
     generate_pdf_from_json(data,rrn + '.pdf')
     @after_this_request
@@ -185,6 +189,22 @@ def get_medications_pdf():
             app.logger.error("Error removing or closing downloaded file handle", error)
         return response
     return send_file('../'+rrn+'.pdf', as_attachment=True)
+
+def decrypt_rrn(encrypted_rrn):
+    key = b'1joonwooseunghonaegamuckneunyak1'  # 32 bytes key
+    iv = b'\x00' * 16  # 16 bytes IV
+
+    encrypted_rrn_bytes = base64.b64decode(encrypted_rrn)
+    cipher = Cipher(algorithms.AES(key), modes.CFB(iv))
+    decryptor = cipher.decryptor()
+    decrypted_rrn = decryptor.update(encrypted_rrn_bytes) + decryptor.finalize()
+    
+    return decrypted_rrn.decode('utf-8')
+
+# # Example usage:
+# encrypted_rrn = 'Your_Encrypted_Base64_RRN'
+# print(decrypt_rrn(encrypted_rrn))
+
 
 def generate_pdf_from_json(data, output_pdf_path):
     pdfmetrics.registerFont(TTFont('NanumGothic', 'nm_server/Nanum_Gothic/NanumGothic-Regular.ttf'))
