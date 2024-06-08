@@ -253,5 +253,11 @@ def generate_pdf_from_json(data, output_pdf_path):
 
     doc.build(elements)
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+# if __name__ == '__main__':
+#     app.run(debug=True, host='0.0.0.0', port=5000)
+@app.route("/")
+def index():
+    return "<h1>Hello!</h1>"
+if __name__ == "__main__":
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=8080)
