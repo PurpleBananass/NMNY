@@ -1,6 +1,6 @@
 import pytest
 import json
-from nm_server.app import app, db_config
+from app import app, db_config
 import mysql.connector
 
 @pytest.fixture

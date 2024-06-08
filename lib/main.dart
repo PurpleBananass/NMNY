@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'screens/elder_page.dart';
 import 'success_page.dart';
 import 'new_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 void main() {
   runApp(MyApp());
@@ -17,40 +19,61 @@ class MyApp extends StatelessWidget {
           backgroundColor: Color(0xff1c78e5),
         ),
         inputDecorationTheme: InputDecorationTheme(
-          // enabledBorder: OutlineInputBorder(
-          //   borderSide: BorderSide(color: Colors.blue, width: 2.0),
-          // ), // 활성화된 상태에서의 테두리 색상과 두께
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color(0xff1c78e5), width: 2.0),
-          ), // 포커스된 상태에서의 테두리 색상과 두께
-          hintStyle: TextStyle(color: Colors.grey), // 힌트 텍스트 스타일
-          labelStyle: TextStyle(color: Color(0xff1c78e5)), // 라벨 텍스트 스타일
-          floatingLabelStyle: TextStyle(color: Color(0xff1c78e5)), // 라벨이 위로 올라갔을 때의 텍스트 스타일
+          ),
+          hintStyle: TextStyle(color: Colors.grey),
+          labelStyle: TextStyle(color: Color(0xff1c78e5)),
+          floatingLabelStyle: TextStyle(color: Color(0xff1c78e5)),
         ),
         textSelectionTheme: TextSelectionThemeData(
-          cursorColor: Color(0xff1c78e5), // 텍스트 커서 색상
-          selectionColor: Color(0xff1c78e5), // 텍스트 선택 색상
-          selectionHandleColor: Color(0xff1c78e5), // 텍스트 선택 핸들 색상
+          cursorColor: Color(0xff1c78e5),
+          selectionColor: Color(0xff1c78e5),
+          selectionHandleColor: Color(0xff1c78e5),
         ),
       ),
       home: UserSelectionPage(),
       routes: {
         '/elder': (context) => ElderPage(),
-        '/success': (context) => SuccessPage(rrn: ''), // Placeholder for navigation with rrn
+        '/success': (context) => SuccessPage(rrn: ''),
         '/new': (context) => NewPage(),
       },
     );
   }
 }
 
-class UserSelectionPage extends StatelessWidget {
+class UserSelectionPage extends StatefulWidget {
   const UserSelectionPage({Key? key}) : super(key: key);
+
+  @override
+  _UserSelectionPageState createState() => _UserSelectionPageState();
+}
+
+class _UserSelectionPageState extends State<UserSelectionPage> {
+  File? _qrCodeFile;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadQrCode();
+  }
+
+  Future<void> _loadQrCode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? qrCodePath = prefs.getString('qrCodePath');
+
+    if (qrCodePath != null) {
+      setState(() {
+        _qrCodeFile = File(qrCodePath);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
-    var buttonPadding = screenWidth * 0.05; // 화면 너비의 5% 만큼 패딩 설정
-    var buttonTextSize = screenWidth * 0.1; // 화면 너비의 5% 만큼 텍스트 크기 설정
+    var buttonPadding = screenWidth * 0.05;
+    var buttonTextSize = screenWidth * 0.1;
 
     return Scaffold(
       appBar: AppBar(
@@ -61,12 +84,11 @@ class UserSelectionPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-                
-            //   ],
-            // ),
+            if (_qrCodeFile != null)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Image.file(_qrCodeFile!),
+              ),
             _buildButton(context, '일반', Colors.yellow, buttonPadding, buttonTextSize),
             SizedBox(height: 10),
             _buildButton(context, '의료진', Colors.green, buttonPadding, buttonTextSize),
@@ -81,7 +103,7 @@ class UserSelectionPage extends StatelessWidget {
   Widget _buildButton(BuildContext context, String text, Color color, double padding, double textSize, {bool large = false, String? route, Color textColor = Colors.black}) {
     var screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
-      width: screenWidth * 0.8, // 버튼 너비 고정
+      width: screenWidth * 0.8,
       child: ElevatedButton(
         onPressed: () {
           if (route != null) {
