@@ -210,7 +210,7 @@ def decrypt_rrn(rrn):
 
 
     # Decode the base64 encoded encrypted text
-    encrypted_bytes = b64decode(encrypted_text)
+    encrypted_bytes = b64decode(rrn)
 
     # Create the cipher
     cipher = AES.new(key, AES.MODE_CBC, iv)
