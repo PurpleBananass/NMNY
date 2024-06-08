@@ -190,16 +190,35 @@ def get_medications_pdf():
         return response
     return send_file('../'+rrn+'.pdf', as_attachment=True)
 
-def decrypt_rrn(encrypted_rrn):
-    key = b'1joonwooseunghonaegamuckneunyak1'  # 32 bytes key
-    iv = b'\x00' * 16  # 16 bytes IV
+# def decrypt_rrn(encrypted_rrn):
+#     key = b'1joonwooseunghonaegamuckneunyak1'  # 32 bytes key
+#     iv = b'\x00' * 16  # 16 bytes IV
 
-    encrypted_rrn_bytes = base64.b64decode(encrypted_rrn)
-    cipher = Cipher(algorithms.AES(key), modes.CFB(iv))
-    decryptor = cipher.decryptor()
-    decrypted_rrn = decryptor.update(encrypted_rrn_bytes) + decryptor.finalize()
+#     encrypted_rrn_bytes = base64.b64decode(encrypted_rrn)
+#     cipher = Cipher(algorithms.AES(key), modes.CFB(iv))
+#     decryptor = cipher.decryptor()
+#     decrypted_rrn = decryptor.update(encrypted_rrn_bytes) + decryptor.finalize()
     
-    return decrypted_rrn.decode('utf-8')
+#     return decrypted_rrn.decode('utf-8')
+def decrypt_rrn(rrn):
+    # Encryption parameters
+    key = b'4f1aaae66406e358'  # 16 bytes key
+    iv = b'df1e180949793972'   # 16 bytes IV
+
+    # Encrypted text from Dart output (replace with your actual encrypted text)
+
+
+    # Decode the base64 encoded encrypted text
+    encrypted_bytes = b64decode(encrypted_text)
+
+    # Create the cipher
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+
+    # Decrypt and unpad the text
+    decrypted_bytes = unpad(cipher.decrypt(encrypted_bytes), AES.block_size)
+    decrypted_text = decrypted_bytes.decode('utf-8')
+
+    return decrypted_text
 
 # # Example usage:
 # encrypted_rrn = 'Your_Encrypted_Base64_RRN'

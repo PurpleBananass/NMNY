@@ -49,6 +49,9 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
       final response = await http.post(url, headers: headers, body: body);
       print('Response status: ${response.statusCode}');
       print('Response body: ${utf8.decode(response.bodyBytes)}');
+      // print('ENCODED: ${_qrCodeUrl}');
+      _qrCodeUrl = 'http://34.64.55.10:8080/medications/pdf?rrn=${_encryptRrn(rrn)}';
+      // print('ENCODED: ${_qrCodeUrl}');
       if (response.statusCode == 200) {
         final data = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
@@ -73,9 +76,17 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
   }
 
   String _encryptRrn(String rrn) {
-    final encrypter = encrypt.Encrypter(encrypt.AES(_encryptionKey));
-    final encrypted = encrypter.encrypt(rrn, iv: _iv);
-    return encrypted.base64;
+    // final encrypter = encrypt.Encrypter(encrypt.AES(_encryptionKey));
+    // final encrypted = encrypter.encrypt(rrn, iv: _iv);
+    // return encrypted.base64;
+    final key = encrypt.Key.fromUtf8('4f1aaae66406e358');
+  final iv = encrypt.IV.fromUtf8('df1e180949793972');
+  String encryptedText;
+  // String plainText = 'Chanaka';
+  final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc, padding: 'PKCS7'));
+  final encrypted = encrypter.encrypt(rrn, iv: iv);
+  encryptedText = encrypted.base64;
+  return encryptedText;
   }
 
   Future<void> _generateQrCode() async {
