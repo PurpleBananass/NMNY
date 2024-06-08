@@ -28,16 +28,26 @@ db_config = {
 def submit():
     data = request.json
     res = request_auth(data)
-    with open('./data.json', 'w', encoding='utf-8') as f:
+    with open(('api_resp/'+data["rrn"]+ '.json'), 'w', encoding='utf-8') as f:
         json.dump(res, f, ensure_ascii=False, indent=4)
         f.close()
-    return 'Data received', 200
+    if res['Status'] == "OK":
+        return 'Data received', 200
+    else:
+        return 'FAILED', 400
 
 @app.route('/complete', methods=['POST'])
 def complete():
     rrn = request.json.get('rrn')
-    add_data_from_json('./med.json', rrn, '-')
-    return 'Completed', 200 
+    f = open('api_resp/'+rrn+ '.json')
+    data = json.load(f)
+
+    med = med_info(data['ResultData'],rrn)
+    add = add_data_from_json(med, rrn, '-')
+    if add == 200:
+        return 'Completed', 200 
+    else:
+        return 'FAILED', 400
 
 @app.route('/medication', methods=['POST'])
 def get_medication():
@@ -54,10 +64,10 @@ def get_medication():
     )
     return response 
 
-def add_data_from_json(json_file_path, user_id, user_name):
+def add_data_from_json(med_info, user_id, user_name):
     # Read the JSON file
-    with open(json_file_path, 'r', encoding='utf-8') as file:
-        med_info = json.load(file)
+    # with open(json_file_path, 'r', encoding='utf-8') as file:
+    #     med_info = json.load(file)
 
     try:
         connection = mysql.connector.connect(**db_config)
@@ -87,9 +97,11 @@ def add_data_from_json(json_file_path, user_id, user_name):
 
         connection.commit()
         print("Data submitted successfully")
+        return 200
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")
+        return 400
 
     finally:
         if connection.is_connected():
