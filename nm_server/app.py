@@ -253,6 +253,63 @@ def generate_pdf_from_json(data, output_pdf_path):
 
     doc.build(elements)
 
+
+@app.route('/add_medication', methods=['POST'])
+def add_medication():
+    data = request.get_json()
+    rrn = data.get('RRN')
+    preparation_no = data.get('No')
+    preparation_date = data.get('DateOfPreparation')
+    dispensary = data.get('Dispensary')
+    phone_number = data.get('PhoneNumber')
+    drug_list = data.get('DrugList', [])
+
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+
+        # Insert the medication preparation data into the database
+        cursor.execute(
+            """
+            INSERT INTO medications (user_id,med_no, date_of_preparation, dispensary, phone_number)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            (rrn, preparation_no, preparation_date, dispensary, phone_number)
+        )
+        preparation_id = cursor.lastrowid
+
+        # Insert each drug in the drug list
+        for drug in drug_list:
+            cursor.execute(
+                """
+                INSERT INTO drugs (med_id, drug_no, effect, code, name, component, quantity, dosage_per_once, daily_dose, total_dosing_days)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    preparation_id,
+                    drug['No'],
+                    drug['Effect'],
+                    drug['Code'],
+                    drug['Name'],
+                    drug['Component'],
+                    drug['Quantity'],
+                    drug['DosagePerOnce'],
+                    drug['DailyDose'],
+                    drug['TotalDosingDays']
+                )
+            )
+
+        connection.commit()
+        return jsonify({"status": "success"}), 200
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return jsonify({"status": "error", "message": str(err)}), 500
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+
+
 # if __name__ == '__main__':
 #     app.run(debug=True, host='0.0.0.0', port=5000)
 @app.route("/")
