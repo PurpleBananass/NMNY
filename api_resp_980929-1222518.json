@@ -1,0 +1,21 @@
+{
+    "ResultData": {
+        "Token": "eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiN0oyMDdLU0E3SnF3IiwicGhvbmUiOiJNREV3T0RrME1EY3lORGc9Iiwic3NuMSI6Ik9UZ3dPVEk1Iiwic3NuMiI6Ik1USXlNalV4T0E9PSIsImJpcnRoZGF5IjoiTVRrNU9EQTVNams9IiwiY3hJZCI6IjAxYzZlZjkzYTUtMjVkYy00YzZiLWIxZTItNTg4ZjQ5YTI0OTg3IiwianRpIjoiZDk1NmRiYTMxOGIwNDZmZGE4NjhjNWI3OTc2YWM0NGRxMGgzM3Q3bCIsImlzcyI6Im9hY3gtc2VydmVyLVlvdXJOYW1lIiwic3ViIjoiQUZURVJfUkVRVUVTVCIsImlhdCI6MTcxNzgzNjM3NiwiZXhwIjoxNzE3ODM2Njc2LCJwcmkiOiJ1R0hLbzIwNlZnbUZjZVBNczZQSzdHTG5HVmtESUhDcXFKRFV1Q1NYdlVJPSJ9.V1xIwxT4Xd7Y1zMdmHaVliHN7zWfIix5zuH6rk1W6Ag",
+        "TxId": "d956dba318b046fda868c5b7976ac44dq0h33t7l",
+        "CxId": "01c6ef93a5-25dc-4c6b-b1e2-588f49a24987",
+        "ReqTxId": "d956dba318b046fda868c5b7976ac44dq0h33t7l",
+        "PrivateAuthType": "KakaoTalk",
+        "UserName": "이준우",
+        "BirthDate": "00010101",
+        "UserCellphoneNumber": "01089407248"
+    },
+    "ApiTxKey": "00e5b767-bbc8-4636-bdd0-6c6b9d117c92",
+    "Status": "OK",
+    "StatusSeq": 0,
+    "ErrorCode": 0,
+    "Message": "성공",
+    "ErrorLog": null,
+    "TargetCode": null,
+    "TargetMessage": null,
+    "PointBalance": "6500.00"
+}

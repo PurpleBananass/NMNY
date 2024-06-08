@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'new_page.dart';  // Ensure this import points to your new page file
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'new_page.dart';
 class SuccessPage extends StatelessWidget {
   final String rrn;
+  // final String birthDate;
 
   const SuccessPage({Key? key, required this.rrn}) : super(key: key);
 
@@ -13,11 +14,16 @@ class SuccessPage extends StatelessWidget {
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({
       'rrn': rrn,
+      // 'birth_date': birthDate,
     });
 
     try {
       final response = await http.post(url, headers: headers, body: body);
       if (response.statusCode == 200) {
+        // Save RRN to local cache
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('rrn', rrn);
+
         // Navigate to the new page if the response is successful
         Navigator.push(context, MaterialPageRoute(builder: (context) => NewPage()));
       } else {
