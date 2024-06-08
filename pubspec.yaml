@@ -35,7 +35,7 @@ dependencies:
   qr_flutter: ^4.0.0
   flutter_pdfview: ^1.0.4  # Check for the latest version
   dio: ^4.0.0  # Check for the latest version
-  
+  path_provider: ^2.0.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

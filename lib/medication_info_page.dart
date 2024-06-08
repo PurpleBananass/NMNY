@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'dart:ui' as ui;
 
 class MedicationInfoPage extends StatefulWidget {
   @override
@@ -14,6 +17,7 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
   bool _hasError = false;
   List<dynamic> _medications = [];
   String? _qrCodeUrl;
+  File? _qrCodeFile;
 
   @override
   void initState() {
@@ -45,8 +49,9 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
         final data = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           _medications = data['ResultList'];
-          _qrCodeUrl = 'http://34.64.55.10:8080/medications/pdf?rrn=$rrn';  // URL to generate PDF
+          _qrCodeUrl = 'http://34.64.55.10:8080/medications/pdf?rrn=$rrn';
           _isLoading = false;
+          _generateQrCode();
         });
       } else {
         setState(() {
@@ -60,6 +65,40 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
         _hasError = true;
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _generateQrCode() async {
+    if (_qrCodeUrl != null) {
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/qrcode.png';
+
+      final qrValidationResult = QrValidator.validate(
+        data: _qrCodeUrl!,
+        version: QrVersions.auto,
+        errorCorrectionLevel: QrErrorCorrectLevel.L,
+      );
+
+      if (qrValidationResult.status == QrValidationStatus.valid) {
+        final qrCode = qrValidationResult.qrCode!;
+        final painter = QrPainter.withQr(
+          qr: qrCode,
+          color: const Color(0xFF000000),
+          emptyColor: const Color(0xFFFFFFFF),
+          gapless: true,
+        );
+
+        final image = await painter.toImage(200);
+        final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+        final bytes = byteData!.buffer.asUint8List();
+        await File(filePath).writeAsBytes(bytes);
+        setState(() {
+          _qrCodeFile = File(filePath);
+        });
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('qrCodePath', filePath);
+      }
     }
   }
 
@@ -125,13 +164,10 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
                         },
                       ),
                     ),
-                    if (_qrCodeUrl != null)
+                    if (_qrCodeFile != null)
                       Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: QrImageView(
-                          data: _qrCodeUrl!,
-                          size: 200,
-                        ),
+                        child: Image.file(_qrCodeFile!),
                       ),
                   ],
                 ),
