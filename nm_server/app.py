@@ -44,7 +44,7 @@ def complete():
 
     med = med_info(data['ResultData'],rrn)
     add = add_data_from_json(med, rrn, '-')
-    if add == 200:
+    if add == 200 and med['Status'] == "OK":
         return 'Completed', 200 
     else:
         return 'FAILED', 400
