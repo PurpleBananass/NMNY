@@ -54,7 +54,7 @@ class UserSelectionPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('이용자 선택'),
+        title: Text('이용자 선택', style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: Center(
