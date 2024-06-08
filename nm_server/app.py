@@ -13,13 +13,14 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
+# from utils import *
 
 app = Flask(__name__)
 CORS(app)
 
 db_config = {
     'user': 'root',
-    'password': '***',
+    'password': '',
     'host': 'localhost',
     'database': 'med_info_db'
 }
@@ -35,25 +36,14 @@ def submit():
 @app.route('/complete', methods=['POST'])
 def complete():
     rrn = request.json.get('rrn')
-    # f = open('./data.json')
-    # data = json.load(f)
-    # med = med_info(data["ResultData"],rrn)
-    # with open('./med.json', 'w', encoding='utf-8') as f:
-    #     json.dump(med, f, ensure_ascii=False, indent=4)
-    #     f.close()
     add_data_from_json('./med.json', rrn, '-')
     return 'Completed', 200 
 
 @app.route('/medication', methods=['POST'])
 def get_medication():
-    # f = open('./med.json')
     data = request.json
     rrn = data.get('rrn')
 
-    # if not rrn:
-    #     return 'Missing RRN', 400
-    # print(rrn)
-    # data = json.load(f)
     data = query_database_to_json(rrn)
     data = json.dumps(data, ensure_ascii=False)
 
@@ -62,8 +52,6 @@ def get_medication():
         status=200,
         mimetype='application/json'
     )
-    # print(response)
-
     return response 
 
 def add_data_from_json(json_file_path, user_id, user_name):
