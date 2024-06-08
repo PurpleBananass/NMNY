@@ -45,7 +45,7 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
         final data = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           _medications = data['ResultList'];
-          _qrCodeUrl = 'http://10.0.2.2:5000/medications/pdf?rrn=$rrn';  // URL to generate PDF
+          _qrCodeUrl = 'http://34.64.55.10:8080/medications/pdf?rrn=$rrn';  // URL to generate PDF
           _isLoading = false;
         });
       } else {
