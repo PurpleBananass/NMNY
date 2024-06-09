@@ -1,23 +1,19 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:nm/utils/styles.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'new_page.dart';
+import 'medication_info_page.dart';
+
 class SuccessPage extends StatelessWidget {
   final String rrn;
-  // final String birthDate;
-
-  const SuccessPage({Key? key, required this.rrn}) : super(key: key);
+  const SuccessPage({super.key, required this.rrn});
 
   Future<void> _completeAuthentication(BuildContext context) async {
     final url = Uri.parse('http://34.64.55.10:8080/complete'); // Update with your server address
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({
       'rrn': rrn,
-      // 'birth_date': birthDate,
     });
 
     try {
@@ -28,7 +24,7 @@ class SuccessPage extends StatelessWidget {
         await prefs.setString('rrn', rrn);
 
         // Navigate to the new page if the response is successful
-        Navigator.push(context, MaterialPageRoute(builder: (context) => NewPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MedicationInfoPage()));
       } else {
         // Show a pop-up message if the response fails
         showDialog(
