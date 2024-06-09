@@ -9,11 +9,13 @@ import 'dart:ui' as ui;
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 class MedicationInfoPage extends StatefulWidget {
+  const MedicationInfoPage({super.key});
+
   @override
-  _MedicationInfoPageState createState() => _MedicationInfoPageState();
+  MedicationInfoPageState createState() => MedicationInfoPageState();
 }
 
-class _MedicationInfoPageState extends State<MedicationInfoPage> {
+class MedicationInfoPageState extends State<MedicationInfoPage> {
   bool _isLoading = true;
   bool _hasError = false;
   List<dynamic> _medications = [];
@@ -78,13 +80,13 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
     // final encrypted = encrypter.encrypt(rrn, iv: _iv);
     // return encrypted.base64;
     final key = encrypt.Key.fromUtf8('4f1aaae66406e358');
-  final iv = encrypt.IV.fromUtf8('df1e180949793972');
-  String encryptedText;
-  // String plainText = 'Chanaka';
-  final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc, padding: 'PKCS7'));
-  final encrypted = encrypter.encrypt(rrn, iv: iv);
-  encryptedText = encrypted.base64;
-  return encryptedText;
+    final iv = encrypt.IV.fromUtf8('df1e180949793972');
+    String encryptedText;
+    // String plainText = 'Chanaka';
+    final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc, padding: 'PKCS7'));
+    final encrypted = encrypter.encrypt(rrn, iv: iv);
+    encryptedText = encrypted.base64;
+    return encryptedText;
   }
 
   Future<void> _generateQrCode() async {
@@ -121,38 +123,17 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('약 상세정보'),
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _hasError
-              ? Center(child: Text('Error fetching data'))
-              : Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16.0),
-                        itemCount: _medications.length,
-                        itemBuilder: (context, index) {
-                          return _buildMedicationCard(_medications[index]);
-                        },
-                      ),
-                    ),
-                    if (_qrCodeFile != null)
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Image.file(_qrCodeFile!),
-                      ),
-                  ],
-                ),
-    );
-  }
+  Set<String> displayedNumbers = {}; // 중복된 일련번호 추적하기 위한 집합
 
   Widget _buildMedicationCard(Map<String, dynamic> medication) {
+    String number = medication['No'];
+
+    if (displayedNumbers.contains(number)) {
+      return SizedBox.shrink(); // 이미 표시된 일련번호는 생략
+    } else {
+      displayedNumbers.add(number);
+    }
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
@@ -160,36 +141,52 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '의약품명: ${medication['DrugList'][0]['Name']}',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Center(
+              child: Text(
+                '${medication['DateOfPreparation']}',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
             ),
             SizedBox(height: 8),
-            Text('영문 의약품명: ${medication['DrugList'][0]['Name']}'),
-            Text('제조회사: ${medication['Dispensary']}'),
-            Text('전화번호: ${medication['PhoneNumber']}'),
-            Text('준비일자: ${medication['DateOfPreparation']}'),
-            Text('번호: ${medication['No']}'),
+            Text('처방: ${medication['Dispensary']}'),
+            Text('의약품명: ${medication['DrugList'][0]['Name']}'),
             SizedBox(height: 16),
-            ...medication['DrugList'].map<Widget>((drug) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('효능: ${drug['Effect']}'),
-                    Text('성분: ${drug['Component']}'),
-                    Text('수량: ${drug['Quantity']}'),
-                    Text('1회 복용량: ${drug['DosagePerOnce']}'),
-                    Text('일일 복용량: ${drug['DailyDose']}'),
-                    Text('총 복용일수: ${drug['TotalDosingDays']}'),
-                  ],
-                ),
-              );
-            }).toList(),
           ],
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    displayedNumbers.clear(); // 화면을 다시 그릴 때마다 중복된 일련번호 추적을 초기화
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('내가 복용중인 약'),
+      ),
+      body: _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : _hasError
+          ? Center(child: Text('Error fetching data'))
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: _medications.length,
+                    itemBuilder: (context, index) {
+                      return _buildMedicationCard(_medications[index]);
+                    },
+                  ),
+                ),
+                // if (_qrCodeFile != null)
+                //   Padding(
+                //     padding: const EdgeInsets.all(16.0),
+                //     child: Image.file(_qrCodeFile!),
+                //   ),
+              ],
+            ),
     );
   }
 }
