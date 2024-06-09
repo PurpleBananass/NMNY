@@ -9,6 +9,7 @@ import 'dart:ui' as ui;
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:logging/logging.dart';
 import 'medication_detail_page.dart';
+import 'manual_medication_entry_page.dart';
 
 class MedicationInfoPage extends StatefulWidget {
   const MedicationInfoPage({super.key});
@@ -222,6 +223,20 @@ class MedicationInfoPageState extends State<MedicationInfoPage> {
                 ),
               ],
             ),
+      floatingActionButton: Tooltip(
+        message: "약 수동 추가",
+        child: FloatingActionButton(  
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ManualMedicationEntryPage()),
+            );
+          },
+          backgroundColor: Color(0xff1c78e5),
+          foregroundColor: Colors.white,
+          child: Icon(Icons.edit),
+        ),
+      ),
     );
   }
 }
