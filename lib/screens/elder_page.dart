@@ -223,9 +223,11 @@ class ElderPageState extends State<ElderPage> {
 
     try {
       await ApiService.submitData(data);
+      //TODO: 나중에 지우기
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Data submitted successfully')));
       _navigateToSuccessPage(rrn);
     } catch (error) {
+      //TODO: 나중에 지우기
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error submitting data: $error')));
     }
   }
