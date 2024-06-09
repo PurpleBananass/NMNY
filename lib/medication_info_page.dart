@@ -202,41 +202,47 @@ class MedicationInfoPageState extends State<MedicationInfoPage> {
   Widget build(BuildContext context) {
     displayedNumbers.clear(); // 화면을 다시 그릴 때마다 중복된 일련번호 추적을 초기화
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('내가 복용중인 약'),
-      ),
-      body: _isLoading
-        ? Center(child: CircularProgressIndicator())
-        : _hasError
-          ? Center(child: Text('Error fetching data'))
-          : Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16.0),
-                    itemCount: _medications.length,
-                    itemBuilder: (context, index) {
-                      return _buildMedicationCard(_medications[index]);
-                    },
-                  ),
-                ),
-              ],
-            ),
-      floatingActionButton: Tooltip(
-        message: "약 수기 작성",
-        child: FloatingActionButton(  
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ManualMedicationEntryPage()),
-            );
-          },
-          backgroundColor: Color(0xff1c78e5),
-          foregroundColor: Colors.white,
-          child: Icon(Icons.edit),
+    return WillPopScope(
+      onWillPop: () async {
+        _fetchMedicationInfo(); // 뒤로가기 버튼을 누르면 데이터를 다시 불러옴 
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('내가 복용중인 약'),
         ),
-      ),
+        body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : _hasError
+            ? Center(child: Text('Error fetching data'))
+            : Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(16.0),
+                      itemCount: _medications.length,
+                      itemBuilder: (context, index) {
+                        return _buildMedicationCard(_medications[index]);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+        floatingActionButton: Tooltip(
+          message: "약 수기 작성",
+          child: FloatingActionButton(  
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ManualMedicationEntryPage()),
+              ).then((value) => _fetchMedicationInfo()); // 약 수기 작성 페이지에서 돌아왔을 때 데이터를 다시 불러옴
+            },
+            backgroundColor: Color(0xff1c78e5),
+            foregroundColor: Colors.white,
+            child: Icon(Icons.edit),
+          ),
+        ),
+      )
     );
   }
 }
