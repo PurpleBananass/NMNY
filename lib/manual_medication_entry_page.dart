@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ManualMedicationEntryPage extends StatefulWidget {
+  const ManualMedicationEntryPage({super.key});
+
   @override
   ManualMedicationEntryPageState createState() => ManualMedicationEntryPageState();
 }
@@ -25,11 +27,11 @@ class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
     _preparationDateController.dispose();
     _dispensaryController.dispose();
     _phoneNumberController.dispose();
-    _drugControllers.forEach((controllers) {
-      controllers.values.forEach((controller) {
+    for (var controllers in _drugControllers) {
+      for (var controller in controllers.values) {
         controller.dispose();
-      });
-    });
+      }
+    }
     super.dispose();
   }
 
@@ -38,7 +40,6 @@ class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
       _drugControllers.add({
         'No': TextEditingController(text: _drugCounter.toString()),
         'Name': TextEditingController(),
-
       });
       _drugCounter++;
     });
@@ -85,16 +86,17 @@ class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
         final response = await http.post(url, headers: headers, body: body);
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Medication information submitted successfully')),
+            SnackBar(content: Text('약 수기 작성이 완료되었습니다.')),
           );
+          Navigator.pop(context); // Go back to the previous page
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to submit medication information')),
+            SnackBar(content: Text('약 수기 정보 제출 중 오류가 발생했습니다.')),
           );
         }
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error submitting medication information')),
+          SnackBar(content: Text('약 수기 정보 제출 중 오류가 발생했습니다. $error')),
         );
       }
     }
@@ -113,11 +115,9 @@ class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
-              // TODO: 일련번호 작성을 해야하나..?
-
               TextFormField(
                 controller: _preparationDateController,
-                decoration: InputDecoration(labelText: '조제일자(YYYY-MM-DD)'),
+                decoration: InputDecoration(labelText: '처방일자 (YYYY-MM-DD)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     value = '-';
@@ -185,16 +185,20 @@ class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
               SizedBox(height: 10),
               ElevatedButton(
                 onPressed: _addDrug,
-                child: Text('Add Drug'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  textStyle: TextStyle(fontSize: 16),
+                ),
+                child: Text('약 추가'),
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submitForm,
-                child: Text('Submit'),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   textStyle: TextStyle(fontSize: 18),
                 ),
+                child: Text('작성 완료'),
               ),
             ],
           ),
