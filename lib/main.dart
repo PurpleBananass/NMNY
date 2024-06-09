@@ -58,6 +58,16 @@ class MyApp extends StatelessWidget {
             }),
           ),
         ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.grey;
+              }
+              return Color(0xff1c78e5);
+            }),
+          ),
+        ),
       ),
       home: UserSelectionPage(),
       routes: {

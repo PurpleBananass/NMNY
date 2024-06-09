@@ -117,10 +117,38 @@ class MedicationInfoPageState extends State<MedicationInfoPage> {
           _qrCodeFile = File(filePath);
         });
 
+        // QR 코드 생성 완료 후 모달 표시
+        _showQrCodeModal();
+
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('qrCodePath', filePath);
       }
     }
+  }
+
+  void _showQrCodeModal() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('QR코드가 생성되었습니다.'),
+              SizedBox(height: 16),
+              if (_qrCodeFile != null)
+                Image.file(_qrCodeFile!),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('확인'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Set<String> displayedNumbers = {}; // 중복된 일련번호 추적하기 위한 집합
