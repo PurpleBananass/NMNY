@@ -32,6 +32,30 @@ class MyApp extends StatelessWidget {
           selectionColor: Color(0xff1c78e5),
           selectionHandleColor: Color(0xff1c78e5),
         ),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return Color(0xff1c78e5);
+            }
+            return Colors.white;
+          }),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.grey;
+              }
+              return Color(0xff1c78e5);
+            }),
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.black;
+              }
+              return Colors.white;
+            }),
+          ),
+        ),
       ),
       home: UserSelectionPage(),
       routes: {

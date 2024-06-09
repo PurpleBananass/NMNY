@@ -319,8 +319,6 @@ class _ElderPageState extends State<ElderPage> {
                   style: ElevatedButton.styleFrom(
                     padding: inputPadding,
                     textStyle: buttonTextStyle,
-                    foregroundColor: Colors.white,
-                    backgroundColor: Color(0xff1c78e5),
                   ),
                   child: Text('이름 입력 완료'),
                 ),

@@ -136,8 +136,6 @@ class SuccessPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 padding: inputPadding,
                 textStyle: buttonTextStyle,
-                foregroundColor: Colors.white,
-                backgroundColor: Color(0xff1c78e5),
               ),
               child: Text('인증 완료'),
             ),
