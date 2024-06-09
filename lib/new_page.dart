@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'medication_info_page.dart';
+import 'manual_medication_entry_page.dart';
 
 class NewPage extends StatelessWidget {
   const NewPage({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class NewPage extends StatelessWidget {
             _buildGridItem(context, '내가 먹는 약', MedicationInfoPage()),
             _buildGridItem(context, '알레르기', Placeholder()),
             _buildGridItem(context, '한약', Placeholder()),
-            _buildGridItem(context, '서비스 이름', Placeholder()),
+            _buildGridItem(context, '서비스 이름', ManualMedicationEntryPage()),
           ],
         ),
       ),

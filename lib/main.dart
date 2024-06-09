@@ -4,6 +4,7 @@ import 'success_page.dart';
 import 'new_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import 'manual_medication_entry_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/elder': (context) => ElderPage(),
         '/success': (context) => SuccessPage(rrn: ''),
         '/new': (context) => NewPage(),
+        '/manual_entry': (context) => ManualMedicationEntryPage(),
       },
     );
   }

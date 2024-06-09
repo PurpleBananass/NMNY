@@ -6,6 +6,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:ui' as ui;
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class MedicationInfoPage extends StatefulWidget {
   @override
@@ -18,6 +19,9 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
   List<dynamic> _medications = [];
   String? _qrCodeUrl;
   File? _qrCodeFile;
+
+  final _encryptionKey = encrypt.Key.fromUtf8('1joonwooseunghonaegamuckneunyak1'); // 32 chars key
+  final _iv = encrypt.IV.fromLength(16);
 
   @override
   void initState() {
@@ -45,11 +49,12 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
       final response = await http.post(url, headers: headers, body: body);
       print('Response status: ${response.statusCode}');
       print('Response body: ${utf8.decode(response.bodyBytes)}');
+      _qrCodeUrl = 'http://34.64.55.10:8080/medications/pdf?rrn=${_encryptRrn(rrn)}';
       if (response.statusCode == 200) {
         final data = json.decode(utf8.decode(response.bodyBytes));
         setState(() {
           _medications = data['ResultList'];
-          _qrCodeUrl = 'http://34.64.55.10:8080/medications/pdf?rrn=$rrn';
+          _qrCodeUrl = 'http://34.64.55.10:8080/medications/pdf?rrn=${_encryptRrn(rrn)}';
           _isLoading = false;
           _generateQrCode();
         });
@@ -66,6 +71,20 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
         _isLoading = false;
       });
     }
+  }
+
+  String _encryptRrn(String rrn) {
+    // final encrypter = encrypt.Encrypter(encrypt.AES(_encryptionKey));
+    // final encrypted = encrypter.encrypt(rrn, iv: _iv);
+    // return encrypted.base64;
+    final key = encrypt.Key.fromUtf8('4f1aaae66406e358');
+  final iv = encrypt.IV.fromUtf8('df1e180949793972');
+  String encryptedText;
+  // String plainText = 'Chanaka';
+  final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc, padding: 'PKCS7'));
+  final encrypted = encrypter.encrypt(rrn, iv: iv);
+  encryptedText = encrypted.base64;
+  return encryptedText;
   }
 
   Future<void> _generateQrCode() async {
@@ -100,6 +119,37 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
         prefs.setString('qrCodePath', filePath);
       }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('약 상세정보'),
+      ),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : _hasError
+              ? Center(child: Text('Error fetching data'))
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16.0),
+                        itemCount: _medications.length,
+                        itemBuilder: (context, index) {
+                          return _buildMedicationCard(_medications[index]);
+                        },
+                      ),
+                    ),
+                    if (_qrCodeFile != null)
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Image.file(_qrCodeFile!),
+                      ),
+                  ],
+                ),
+    );
   }
 
   Widget _buildMedicationCard(Map<String, dynamic> medication) {
@@ -140,37 +190,6 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
           ],
         ),
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('약 상세정보'),
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _hasError
-              ? Center(child: Text('Error fetching data'))
-              : Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16.0),
-                        itemCount: _medications.length,
-                        itemBuilder: (context, index) {
-                          return _buildMedicationCard(_medications[index]);
-                        },
-                      ),
-                    ),
-                    if (_qrCodeFile != null)
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Image.file(_qrCodeFile!),
-                      ),
-                  ],
-                ),
     );
   }
 }
