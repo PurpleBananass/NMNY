@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:nm/utils/styles.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'medication_info_page.dart';
 
-class SuccessPage extends StatelessWidget {
+class SuccessPage extends StatefulWidget {
   final String rrn;
+
   const SuccessPage({super.key, required this.rrn});
 
+  @override
+  _SuccessPageState createState() => _SuccessPageState();
+}
+
+class _SuccessPageState extends State<SuccessPage> {
+  bool _isLoading = false;
+
   Future<void> _completeAuthentication(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final url = Uri.parse('http://34.64.55.10:8080/complete'); // Update with your server address
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({
-      'rrn': rrn,
+      'rrn': widget.rrn,
     });
 
     try {
@@ -21,42 +32,38 @@ class SuccessPage extends StatelessWidget {
       if (response.statusCode == 200) {
         // Save RRN to local cache
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('rrn', rrn);
+        await prefs.setString('rrn', widget.rrn);
 
         // Navigate to the new page if the response is successful
         Navigator.push(context, MaterialPageRoute(builder: (context) => MedicationInfoPage()));
       } else {
         // Show a pop-up message if the response fails
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('인증 실패'),
-            content: Text('인증 확인 후 완료해주세요'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('확인'),
-              ),
-            ],
-          ),
-        );
+        _showErrorDialog(context, '인증 실패', '인증 확인 후 완료해주세요');
       }
     } catch (error) {
       print('Error completing authentication: $error');
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('오류'),
-          content: Text('인증 확인 후 완료해주세요'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('확인'),
-            ),
-          ],
-        ),
-      );
+      _showErrorDialog(context, '오류', '인증 확인 후 완료해주세요');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
+  }
+
+  void _showErrorDialog(BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('확인'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -127,14 +134,16 @@ class SuccessPage extends StatelessWidget {
               ],
             ),
             SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: () => _completeAuthentication(context),
-              style: ElevatedButton.styleFrom(
-                padding: inputPadding,
-                textStyle: buttonTextStyle,
-              ),
-              child: Text('인증 완료'),
-            ),
+            _isLoading
+                ? Center(child: CircularProgressIndicator())
+                : ElevatedButton(
+                    onPressed: () => _completeAuthentication(context),
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                      textStyle: TextStyle(fontSize: 18),
+                    ),
+                    child: Text('인증 완료'),
+                  ),
           ],
         ),
       ),
