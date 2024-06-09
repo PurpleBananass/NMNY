@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'medication_detail_page.dart';
 
 class MedicationInfoPage extends StatefulWidget {
   const MedicationInfoPage({super.key});
@@ -162,24 +163,32 @@ class MedicationInfoPageState extends State<MedicationInfoPage> {
       displayedNumbers.add(number);
     }
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Text(
-                '${medication['DateOfPreparation']}',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MedicationDetailPage(medication: medication)),
+        );
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Text(
+                  '${medication['DateOfPreparation']}',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-            Text('처방: ${medication['Dispensary']}'),
-            Text('의약품명: ${medication['DrugList'][0]['Name']}'),
-            SizedBox(height: 16),
-          ],
+              SizedBox(height: 8),
+              Text('처방: ${medication['Dispensary']}'),
+              Text('의약품명: ${medication['DrugList'][0]['Name']}'),
+              SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );
@@ -208,11 +217,6 @@ class MedicationInfoPageState extends State<MedicationInfoPage> {
                     },
                   ),
                 ),
-                // if (_qrCodeFile != null)
-                //   Padding(
-                //     padding: const EdgeInsets.all(16.0),
-                //     child: Image.file(_qrCodeFile!),
-                //   ),
               ],
             ),
     );
