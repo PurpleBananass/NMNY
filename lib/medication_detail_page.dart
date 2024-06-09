@@ -16,11 +16,10 @@ class MedicationDetailPage extends StatelessWidget {
         child: ListView(
           children: [
             _buildHeader('의약품 정보'),
+            _buildInfoItem('제조일자', medication['DateOfPreparation']),
             _buildInfoItem('의약품명', medication['DrugList'][0]['Name']),
-            _buildInfoItem('영문 의약품명', medication['DrugList'][0]['Name']),
-            _buildInfoItem('제조회사', medication['Dispensary']),
+            _buildInfoItem('처방기관', medication['Dispensary']),
             _buildInfoItem('전화번호', medication['PhoneNumber']),
-            _buildInfoItem('준비일자', medication['DateOfPreparation']),
             _buildInfoItem('번호', medication['No']),
             SizedBox(height: 16),
             _buildHeader('약품 상세 정보'),
