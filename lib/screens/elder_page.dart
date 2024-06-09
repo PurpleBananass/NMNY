@@ -11,10 +11,10 @@ class ElderPage extends StatefulWidget {
   const ElderPage({super.key});
 
   @override
-  _ElderPageState createState() => _ElderPageState();
+  ElderPageState createState() => ElderPageState();
 }
 
-class _ElderPageState extends State<ElderPage> {
+class ElderPageState extends State<ElderPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _rrnFirstController = TextEditingController();
@@ -27,7 +27,6 @@ class _ElderPageState extends State<ElderPage> {
 
   bool _isNameEntered = false;
   bool _isRrnEntered = false;
-  bool _isPhoneEntered = false;
 
   bool _isChecked1 = false;
   bool _isChecked2 = false;
@@ -99,9 +98,6 @@ class _ElderPageState extends State<ElderPage> {
 
   void _handlePhoneInput() {
     if (_phoneController.text.length == 13) {
-      setState(() {
-        _isPhoneEntered = true;
-      });
       _showAgreementModal();
     }
   }
