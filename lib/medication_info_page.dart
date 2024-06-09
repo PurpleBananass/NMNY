@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:logging/logging.dart';
 import 'medication_detail_page.dart';
 
 class MedicationInfoPage extends StatefulWidget {
@@ -23,8 +24,10 @@ class MedicationInfoPageState extends State<MedicationInfoPage> {
   String? _qrCodeUrl;
   File? _qrCodeFile;
 
-  final _encryptionKey = encrypt.Key.fromUtf8('1joonwooseunghonaegamuckneunyak1'); // 32 chars key
-  final _iv = encrypt.IV.fromLength(16);
+  Logger logger = Logger('MedicationInfoPage');
+
+  // final _encryptionKey = encrypt.Key.fromUtf8('1joonwooseunghonaegamuckneunyak1'); // 32 chars key
+  // final _iv = encrypt.IV.fromLength(16);
 
   @override
   void initState() {
@@ -50,8 +53,8 @@ class MedicationInfoPageState extends State<MedicationInfoPage> {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${utf8.decode(response.bodyBytes)}');
+      logger.info('Response status: ${response.statusCode}');
+      logger.info('Response body: ${utf8.decode(response.bodyBytes)}');
       _qrCodeUrl = 'http://34.64.55.10:8080/medications/pdf?rrn=${_encryptRrn(rrn)}';
       if (response.statusCode == 200) {
         final data = json.decode(utf8.decode(response.bodyBytes));
@@ -68,7 +71,7 @@ class MedicationInfoPageState extends State<MedicationInfoPage> {
         });
       }
     } catch (error) {
-      print('Error fetching data: $error');
+      logger.info('Error fetching data: $error');
       setState(() {
         _hasError = true;
         _isLoading = false;
