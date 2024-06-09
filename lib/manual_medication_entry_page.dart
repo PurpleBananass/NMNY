@@ -37,14 +37,8 @@ class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
     setState(() {
       _drugControllers.add({
         'No': TextEditingController(text: _drugCounter.toString()),
-        'Effect': TextEditingController(),
-        'Code': TextEditingController(),
         'Name': TextEditingController(),
-        'Component': TextEditingController(),
-        'Quantity': TextEditingController(),
-        'DosagePerOnce': TextEditingController(),
-        'DailyDose': TextEditingController(),
-        'TotalDosingDays': TextEditingController(),
+
       });
       _drugCounter++;
     });
@@ -69,14 +63,8 @@ class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
       final drugList = _drugControllers.map((controllers) {
         return {
           'No': controllers['No']!.text,
-          'Effect': controllers['Effect']!.text,
-          'Code': controllers['Code']!.text,
           'Name': controllers['Name']!.text,
-          'Component': controllers['Component']!.text,
-          'Quantity': controllers['Quantity']!.text,
-          'DosagePerOnce': controllers['DosagePerOnce']!.text,
-          'DailyDose': controllers['DailyDose']!.text,
-          'TotalDosingDays': controllers['TotalDosingDays']!.text,
+
         };
       }).toList();
 
@@ -126,22 +114,14 @@ class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
           child: ListView(
             children: <Widget>[
               // TODO: 일련번호 작성을 해야하나..?
-              TextFormField(
-                controller: _preparationNoController,
-                decoration: InputDecoration(labelText: '일련번호'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the preparation number';
-                  }
-                  return null;
-                },
-              ),
+
               TextFormField(
                 controller: _preparationDateController,
                 decoration: InputDecoration(labelText: '조제일자(YYYY-MM-DD)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return '조제일자를 작성하세요.';
+                    value = '-';
+                    return null;
                   }
                   return null;
                 },
@@ -156,21 +136,13 @@ class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
                 decoration: InputDecoration(labelText: '조제기관'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the dispensary';
+                    value = '-';
+                    return null;
                   }
                   return null;
                 },
               ),
-              TextFormField(
-                controller: _phoneNumberController,
-                decoration: InputDecoration(labelText: '연락처'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the phone number';
-                  }
-                  return null;
-                },
-              ),
+
               SizedBox(height: 20),
               Text('Drugs', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
               ..._drugControllers.asMap().entries.map((entry) {
@@ -234,22 +206,9 @@ class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
     switch (key) {
       case 'No':
         return '번호';
-      case 'Effect':
-        return '약효';
-      case 'Code':
-        return '약품코드';
       case 'Name':
         return '제품명';
-      case 'Component':
-        return '성분명';
-      case 'Quantity':
-        return '함량';
-      case 'DosagePerOnce':
-        return '1회 투약량';
-      case 'DailyDose':
-        return '1일 투여횟수';
-      case 'TotalDosingDays':
-        return '총 투약일수';
+    
       default:
         return key;
     }
