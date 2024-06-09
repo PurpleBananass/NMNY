@@ -18,6 +18,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         appBarTheme: AppBarTheme(
           backgroundColor: Color(0xff1c78e5),
+          foregroundColor: Colors.white,
+          centerTitle: true,
         ),
         inputDecorationTheme: InputDecorationTheme(
           focusedBorder: OutlineInputBorder(
@@ -31,6 +33,40 @@ class MyApp extends StatelessWidget {
           cursorColor: Color(0xff1c78e5),
           selectionColor: Color(0xff1c78e5),
           selectionHandleColor: Color(0xff1c78e5),
+        ),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return Color(0xff1c78e5);
+            }
+            return Colors.white;
+          }),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.grey;
+              }
+              return Color(0xff1c78e5);
+            }),
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.black;
+              }
+              return Colors.white;
+            }),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.disabled)) {
+                return Colors.grey;
+              }
+              return Color(0xff1c78e5);
+            }),
+          ),
         ),
       ),
       home: UserSelectionPage(),

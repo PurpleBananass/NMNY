@@ -7,21 +7,28 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:logging/logging.dart';
+import 'medication_detail_page.dart';
+import 'manual_medication_entry_page.dart';
 
 class MedicationInfoPage extends StatefulWidget {
+  const MedicationInfoPage({super.key});
+
   @override
-  _MedicationInfoPageState createState() => _MedicationInfoPageState();
+  MedicationInfoPageState createState() => MedicationInfoPageState();
 }
 
-class _MedicationInfoPageState extends State<MedicationInfoPage> {
+class MedicationInfoPageState extends State<MedicationInfoPage> {
   bool _isLoading = true;
   bool _hasError = false;
   List<dynamic> _medications = [];
   String? _qrCodeUrl;
   File? _qrCodeFile;
 
-  final _encryptionKey = encrypt.Key.fromUtf8('1joonwooseunghonaegamuckneunyak1'); // 32 chars key
-  final _iv = encrypt.IV.fromLength(16);
+  Logger logger = Logger('MedicationInfoPage');
+
+  // final _encryptionKey = encrypt.Key.fromUtf8('1joonwooseunghonaegamuckneunyak1'); // 32 chars key
+  // final _iv = encrypt.IV.fromLength(16);
 
   @override
   void initState() {
@@ -47,8 +54,8 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${utf8.decode(response.bodyBytes)}');
+      logger.info('Response status: ${response.statusCode}');
+      logger.info('Response body: ${utf8.decode(response.bodyBytes)}');
       _qrCodeUrl = 'http://34.64.55.10:8080/medications/pdf?rrn=${_encryptRrn(rrn)}';
       if (response.statusCode == 200) {
         final data = json.decode(utf8.decode(response.bodyBytes));
@@ -65,7 +72,7 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
         });
       }
     } catch (error) {
-      print('Error fetching data: $error');
+      logger.info('Error fetching data: $error');
       setState(() {
         _hasError = true;
         _isLoading = false;
@@ -78,13 +85,13 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
     // final encrypted = encrypter.encrypt(rrn, iv: _iv);
     // return encrypted.base64;
     final key = encrypt.Key.fromUtf8('4f1aaae66406e358');
-  final iv = encrypt.IV.fromUtf8('df1e180949793972');
-  String encryptedText;
-  // String plainText = 'Chanaka';
-  final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc, padding: 'PKCS7'));
-  final encrypted = encrypter.encrypt(rrn, iv: iv);
-  encryptedText = encrypted.base64;
-  return encryptedText;
+    final iv = encrypt.IV.fromUtf8('df1e180949793972');
+    String encryptedText;
+    // String plainText = 'Chanaka';
+    final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc, padding: 'PKCS7'));
+    final encrypted = encrypter.encrypt(rrn, iv: iv);
+    encryptedText = encrypted.base64;
+    return encryptedText;
   }
 
   Future<void> _generateQrCode() async {
@@ -115,79 +122,119 @@ class _MedicationInfoPageState extends State<MedicationInfoPage> {
           _qrCodeFile = File(filePath);
         });
 
+        // QR 코드 생성 완료 후 모달 표시
+        _showQrCodeModal();
+
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('qrCodePath', filePath);
       }
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('약 상세정보'),
-      ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _hasError
-              ? Center(child: Text('Error fetching data'))
-              : Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16.0),
-                        itemCount: _medications.length,
-                        itemBuilder: (context, index) {
-                          return _buildMedicationCard(_medications[index]);
-                        },
-                      ),
-                    ),
-                    if (_qrCodeFile != null)
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Image.file(_qrCodeFile!),
-                      ),
-                  ],
-                ),
+  void _showQrCodeModal() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('QR코드가 생성되었습니다.'),
+              SizedBox(height: 16),
+              if (_qrCodeFile != null)
+                Image.file(_qrCodeFile!),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('확인'),
+            ),
+          ],
+        );
+      },
     );
   }
 
+  Set<String> displayedNumbers = {}; // 중복된 일련번호 추적하기 위한 집합
+
   Widget _buildMedicationCard(Map<String, dynamic> medication) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '의약품명: ${medication['DrugList'][0]['Name']}',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            SizedBox(height: 8),
-            Text('영문 의약품명: ${medication['DrugList'][0]['Name']}'),
-            Text('제조회사: ${medication['Dispensary']}'),
-            Text('전화번호: ${medication['PhoneNumber']}'),
-            Text('준비일자: ${medication['DateOfPreparation']}'),
-            Text('번호: ${medication['No']}'),
-            SizedBox(height: 16),
-            ...medication['DrugList'].map<Widget>((drug) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('효능: ${drug['Effect']}'),
-                    Text('성분: ${drug['Component']}'),
-                    Text('수량: ${drug['Quantity']}'),
-                    Text('1회 복용량: ${drug['DosagePerOnce']}'),
-                    Text('일일 복용량: ${drug['DailyDose']}'),
-                    Text('총 복용일수: ${drug['TotalDosingDays']}'),
-                  ],
+    String number = medication['No'];
+
+    if (displayedNumbers.contains(number)) {
+      return SizedBox.shrink(); // 이미 표시된 일련번호는 생략
+    } else {
+      displayedNumbers.add(number);
+    }
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MedicationDetailPage(medication: medication)),
+        );
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Text(
+                  '${medication['DateOfPreparation']}',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-              );
-            }).toList(),
-          ],
+              ),
+              SizedBox(height: 8),
+              Text('처방: ${medication['Dispensary']}'),
+              Text('의약품명: ${medication['DrugList'][0]['Name']}'),
+              SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    displayedNumbers.clear(); // 화면을 다시 그릴 때마다 중복된 일련번호 추적을 초기화
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('내가 복용중인 약'),
+      ),
+      body: _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : _hasError
+          ? Center(child: Text('Error fetching data'))
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: _medications.length,
+                    itemBuilder: (context, index) {
+                      return _buildMedicationCard(_medications[index]);
+                    },
+                  ),
+                ),
+              ],
+            ),
+      floatingActionButton: Tooltip(
+        message: "약 수기 작성",
+        child: FloatingActionButton(  
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ManualMedicationEntryPage()),
+            );
+          },
+          backgroundColor: Color(0xff1c78e5),
+          foregroundColor: Colors.white,
+          child: Icon(Icons.edit),
         ),
       ),
     );

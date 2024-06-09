@@ -11,10 +11,10 @@ class ElderPage extends StatefulWidget {
   const ElderPage({super.key});
 
   @override
-  _ElderPageState createState() => _ElderPageState();
+  ElderPageState createState() => ElderPageState();
 }
 
-class _ElderPageState extends State<ElderPage> {
+class ElderPageState extends State<ElderPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _rrnFirstController = TextEditingController();
@@ -23,10 +23,10 @@ class _ElderPageState extends State<ElderPage> {
   final FocusNode _rrnFirstFocusNode = FocusNode();
   final FocusNode _rrnSecondFocusNode = FocusNode();
   final FocusNode _phoneFocusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
 
   bool _isNameEntered = false;
   bool _isRrnEntered = false;
-  bool _isPhoneEntered = false;
 
   bool _isChecked1 = false;
   bool _isChecked2 = false;
@@ -44,6 +44,7 @@ class _ElderPageState extends State<ElderPage> {
     _rrnFirstFocusNode.dispose();
     _rrnSecondFocusNode.dispose();
     _phoneFocusNode.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -90,109 +91,26 @@ class _ElderPageState extends State<ElderPage> {
 
   void _requestPhoneFocus() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToTop();
       FocusScope.of(context).requestFocus(_phoneFocusNode);
     });
   }
 
   void _handlePhoneInput() {
     if (_phoneController.text.length == 13) {
-      setState(() {
-        _isPhoneEntered = true;
-      });
       _showAgreementModal();
     }
   }
 
-  // void _showAgreementModal() {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(
-  //         builder: (BuildContext context, StateSetter setState) {
-  //           return Container( 
-  //             height: MediaQuery.of(context).size.height * 0.3, 
-  //             child: Column(
-  //               children: [
-  //                 Padding(
-  //                   padding: const EdgeInsets.all(16.0),
-  //                   child: Row(
-  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                     children: [
-  //                       Text(
-  //                         '서비스 약관 동의',
-  //                         style: TextStyle(
-  //                           fontSize: 24,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                       IconButton(
-  //                         icon: Icon(Icons.close),
-  //                         onPressed: () {
-  //                           Navigator.of(context).pop();
-  //                         },
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //                 Expanded(
-  //                   child: SingleChildScrollView(
-  //                     child: ListBody(
-  //                       children: <Widget>[
-  //                         CheckboxListTile(
-  //                           controlAffinity: ListTileControlAffinity.leading,
-  //                           title: Text('개인정보이용 동의'),
-  //                           value: _isChecked1,
-  //                           onChanged: (value) {
-  //                             setState(() {
-  //                               _isChecked1 = value ?? false;
-  //                             });
-  //                           },
-  //                         ),
-  //                         CheckboxListTile(
-  //                           controlAffinity: ListTileControlAffinity.leading,
-  //                           title: Text('고유식별정보처리 동의'),
-  //                           value: _isChecked2,
-  //                           onChanged: (value) {
-  //                             setState(() {
-  //                               _isChecked2 = value ?? false;
-  //                             });
-  //                           },
-  //                         ),
-  //                         // ... (다른 약관 추가) ...
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 Padding(
-  //                   padding: const EdgeInsets.all(16.0),
-  //                   child: ElevatedButton(
-  //                     style: ElevatedButton.styleFrom(
-  //                       minimumSize: Size(double.infinity, 60),
-  //                     ),
-  //                     onPressed: () {
-  //                       setState(() {
-  //                         _isChecked1 = true;
-  //                         _isChecked2 = true;
-  //                         // ... (다른 약관 전체 선택) ...
-  //                       });
-  //                       Navigator.of(context).pop();
-  //                     },
-  //                     child: Text(
-  //                       '전체 동의',
-  //                       style: TextStyle(fontSize: 24),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
+  void _scrollToTop() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+        0,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
 
   void _showAgreementModal() {
   showModalBottomSheet(
@@ -202,7 +120,7 @@ class _ElderPageState extends State<ElderPage> {
       return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return Container(
-            height: MediaQuery.of(context).size.height * 0.3,
+            height: MediaQuery.of(context).size.height * 0.5,
             child: Column(
               children: [
                 Padding(
@@ -342,6 +260,7 @@ class _ElderPageState extends State<ElderPage> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
+        controller: _scrollController,
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,8 +315,6 @@ class _ElderPageState extends State<ElderPage> {
                   style: ElevatedButton.styleFrom(
                     padding: inputPadding,
                     textStyle: buttonTextStyle,
-                    foregroundColor: Colors.white,
-                    backgroundColor: Color(0xff1c78e5),
                   ),
                   child: Text('이름 입력 완료'),
                 ),

@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:nm/utils/styles.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'new_page.dart';
+import 'medication_info_page.dart';
+
 class SuccessPage extends StatelessWidget {
   final String rrn;
-  // final String birthDate;
-
-  const SuccessPage({Key? key, required this.rrn}) : super(key: key);
+  const SuccessPage({super.key, required this.rrn});
 
   Future<void> _completeAuthentication(BuildContext context) async {
     final url = Uri.parse('http://34.64.55.10:8080/complete'); // Update with your server address
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({
       'rrn': rrn,
-      // 'birth_date': birthDate,
     });
 
     try {
@@ -25,7 +24,7 @@ class SuccessPage extends StatelessWidget {
         await prefs.setString('rrn', rrn);
 
         // Navigate to the new page if the response is successful
-        Navigator.push(context, MaterialPageRoute(builder: (context) => NewPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MedicationInfoPage()));
       } else {
         // Show a pop-up message if the response fails
         showDialog(
@@ -64,7 +63,10 @@ class SuccessPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('간편서명'),
+        title: Text(
+          '간편 서명',
+          style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -74,44 +76,64 @@ class SuccessPage extends StatelessWidget {
           children: <Widget>[
             SizedBox(height: 20),
             Text(
-              '카카오톡 모바일인증을 진행해주세요.',
+              '카카오톡 인증을 진행해 주세요.',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
             Text(
-              '입력하신 휴대폰으로 인증 요청 메시지를 보냈습니다.\n카카오톡앱에서 인증을 진행해주세요.',
+              '입력하신 휴대폰으로 인증 요청 메시지를 보냈습니다.\n카카오톡에서 인증을 진행해주세요.',
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Icon(Icons.message, size: 50),
-                    SizedBox(height: 10),
-                    Text('STEP 01\n카카오톡앱에서\n메시지 확인', textAlign: TextAlign.center),
-                  ],
+                Flexible(
+                  child: Column(
+                    children: <Widget>[
+                      Text('STEP 1', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                      SizedBox(height: 10),
+                      Image.asset('assets/kakaotalk.png', width: 50),
+                      SizedBox(height: 10),
+                      Text('카카오톡\n확인', textAlign: TextAlign.center),
+                    ],
+                  ),
                 ),
                 Icon(Icons.arrow_forward, size: 30),
-                Column(
-                  children: <Widget>[
-                    Icon(Icons.check_circle, size: 50),
-                    SizedBox(height: 10),
-                    Text('STEP 02\n인증 완료 후,\n현재 화면의 인증 완료 클릭', textAlign: TextAlign.center),
-                  ],
+                Flexible(
+                  child: Column(
+                    children: const <Widget>[
+                      Text('STEP 2', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                      SizedBox(height: 10),
+                      Icon(Icons.verified_user, size: 50),
+                      SizedBox(height: 10),
+                      Text('카카오\n인증 진행', textAlign: TextAlign.center),
+                    ],
+                  ),
+                ),
+                Icon(Icons.arrow_forward, size: 30),
+                Flexible(
+                  child: Column(
+                    children: const <Widget>[
+                      Text('STEP 3', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                      SizedBox(height: 10),
+                      Icon(Icons.check_circle, size: 50),
+                      SizedBox(height: 10),
+                      Text('인증 완료 클릭', textAlign: TextAlign.center),
+                    ],
+                  ),
                 ),
               ],
             ),
             SizedBox(height: 40),
             ElevatedButton(
               onPressed: () => _completeAuthentication(context),
-              child: Text('인증 완료'),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                textStyle: TextStyle(fontSize: 18),
+                padding: inputPadding,
+                textStyle: buttonTextStyle,
               ),
+              child: Text('인증 완료'),
             ),
           ],
         ),

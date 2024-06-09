@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ManualMedicationEntryPage extends StatefulWidget {
   @override
-  _ManualMedicationEntryPageState createState() => _ManualMedicationEntryPageState();
+  ManualMedicationEntryPageState createState() => ManualMedicationEntryPageState();
 }
 
-class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
+class ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
   final _formKey = GlobalKey<FormState>();
   final _preparationNoController = TextEditingController();
   final _preparationDateController = TextEditingController();
@@ -115,7 +116,7 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Enter Medication Information'),
+        title: Text('약 수기 작성'),
         centerTitle: true,
       ),
       body: Padding(
@@ -124,6 +125,7 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
           key: _formKey,
           child: ListView(
             children: <Widget>[
+              // TODO: 일련번호 작성을 해야하나..?
               TextFormField(
                 controller: _preparationNoController,
                 decoration: InputDecoration(labelText: '일련번호'),
@@ -139,10 +141,15 @@ class _ManualMedicationEntryPageState extends State<ManualMedicationEntryPage> {
                 decoration: InputDecoration(labelText: '조제일자(YYYY-MM-DD)'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the date of preparation';
+                    return '조제일자를 작성하세요.';
                   }
                   return null;
                 },
+                keyboardType: TextInputType.datetime,
+                // inputFormatters: [
+                //   FilteringTextInputFormatter.digitsOnly,
+                //   LengthLimitingTextInputFormatter(8),
+                // ],
               ),
               TextFormField(
                 controller: _dispensaryController,
