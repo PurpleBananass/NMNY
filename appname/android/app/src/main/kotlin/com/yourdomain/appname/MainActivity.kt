@@ -1,4 +1,4 @@
-package com.example.nmny
+package com.yourdomain.appname
 
 import io.flutter.embedding.android.FlutterActivity
 
