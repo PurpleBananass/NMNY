@@ -224,7 +224,7 @@ class MedicationInfoPageState extends State<MedicationInfoPage> {
               ],
             ),
       floatingActionButton: Tooltip(
-        message: "약 수동 추가",
+        message: "약 수기 작성",
         child: FloatingActionButton(  
           onPressed: () {
             Navigator.push(
